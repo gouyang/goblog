@@ -74,7 +74,7 @@ func BlogList(w http.ResponseWriter, r *http.Request) {
 	files, _ := ioutil.ReadDir("./files")
 	for _, f := range files {
 		title := strings.Replace(f.Name(), ".txt", "", 1)
-		fmt.Fprintf(w, "<div><a href=\"/blog/%s\">%s</a></div>", title, title)
+		fmt.Fprintf(w, "<div><strong><em><a href=\"/blog/%s\">%s</a></em></strong></div>", title, title)
 	}
 }
 
