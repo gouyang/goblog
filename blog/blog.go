@@ -40,23 +40,23 @@ func renderTemplate(w http.ResponseWriter, p *Article, tmpl string) {
 
 func DefaultView(w http.ResponseWriter, r *http.Request) {
 	homePage := &Article{Title: "Home Page", Body: []byte("A blog system")}
-	renderTemplate(w, homePage, "index")
+	renderTemplate(w, homePage, "layout")
 }
 
 func BlogNew(w http.ResponseWriter, r *http.Request) {
-	body := r.FormValue("body")
 	title := r.FormValue("title")
+	body := r.FormValue("body")
 	p := &Article{Title: title, Body: []byte(body)}
-	p.saveArticle()
-	renderTemplate(w, p, "edit")
+	renderTemplate(w, p, "new")
 }
 
 func BlogSave(w http.ResponseWriter, r *http.Request) {
-	title := r.URL.Path[len("/blog/save/"):]
+	//title := r.URL.Path[len("/blog/save/"):]
+	title := r.FormValue("title")
 	body := r.FormValue("body")
 	p := &Article{Title: title, Body: []byte(body)}
 	p.saveArticle()
-	http.Redirect(w, r, "/blogs/"+title, http.StatusFound)
+	http.Redirect(w, r, "/blog/"+title, http.StatusFound)
 }
 
 func BlogEdit(w http.ResponseWriter, r *http.Request) {
@@ -69,8 +69,10 @@ func BlogEdit(w http.ResponseWriter, r *http.Request) {
 }
 
 func BlogList(w http.ResponseWriter, r *http.Request) {
-	blogs, _ := ioutil.ReadDir("./files")
-	for _, f := range blogs {
+	fmt.Fprintf(w, "<a href=\"/\">Home</a>")
+	fmt.Fprintf(w, "<h1>Blog posts ...</h1>")
+	files, _ := ioutil.ReadDir("./files")
+	for _, f := range files {
 		title := strings.Replace(f.Name(), ".txt", "", 1)
 		fmt.Fprintf(w, "<div><a href=\"/blog/%s\">%s</a></div>", title, title)
 	}

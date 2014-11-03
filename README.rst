@@ -1,14 +1,14 @@
 goblog
 ======
 
-try to write a blog framework from the scratch
+Learn to write a blog framework from scratch in golang
 
 **Installation**
 
-- cd $GOPATH
-- go get github.com/ouyanggh/goblog 
-- cd src/github.com/ouyanggh/goblog
-- go run main.go
+- $ cd $GOPATH
+- $ go get github.com/ouyanggh/goblog 
+- $ cd src/github.com/ouyanggh/goblog
+- $ go run main.go
 
 **TODO**
 
@@ -17,3 +17,4 @@ try to write a blog framework from the scratch
 .. _Writing Web Applications: https://golang.org/doc/articles/wiki/
 
 2. basic architecture of whole project
+
