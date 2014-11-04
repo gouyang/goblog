@@ -2,10 +2,11 @@ package blog
 
 import (
 	"fmt"
+	"github.com/ouyanggh/goblog/core"
 	"html/template"
 	"io/ioutil"
 	"net/http"
-	"strings"
+	//"strings"
 )
 
 func CheckErr(err error) {
@@ -55,31 +56,36 @@ func BlogSave(w http.ResponseWriter, r *http.Request) {
 	title := r.FormValue("title")
 	body := r.FormValue("body")
 	p := &Article{Title: title, Body: []byte(body)}
-	p.saveArticle()
+	//p.saveArticle()
+	core.SqliteInsert(p.Title, p.Body)
 	http.Redirect(w, r, "/blog/"+title, http.StatusFound)
 }
 
 func BlogEdit(w http.ResponseWriter, r *http.Request) {
 	title := r.URL.Path[len("/blog/edit/"):]
-	p, err := loadArticle(title)
-	if err != nil {
-		p = &Article{Title: title}
-	}
+	titles := core.SqliteQuery()
+	p := &Article{Title: title, Body: titles[title]}
 	renderTemplate(w, p, "edit")
 }
 
 func BlogList(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "<a href=\"/\">Home</a>")
 	fmt.Fprintf(w, "<h1>Blog posts ...</h1>")
-	files, _ := ioutil.ReadDir("./files")
-	for _, f := range files {
-		title := strings.Replace(f.Name(), ".txt", "", 1)
+	titles := core.SqliteQuery()
+	fmt.Println(titles)
+	for title, _ := range titles {
 		fmt.Fprintf(w, "<div><strong><em><a href=\"/blog/%s\">%s</a></em></strong></div>", title, title)
 	}
+	//files, _ := ioutil.ReadDir("./files")
+	//for _, f := range files {
+	//	title := strings.Replace(f.Name(), ".txt", "", 1)
+	//	fmt.Fprintf(w, "<div><strong><em><a href=\"/blog/%s\">%s</a></em></strong></div>", title, title)
+	//}
 }
 
 func BlogView(w http.ResponseWriter, r *http.Request) {
 	title := r.URL.Path[len("/blog/"):]
-	p, _ := loadArticle(title)
+	titles := core.SqliteQuery()
+	p := &Article{Title: title, Body: titles[title]}
 	renderTemplate(w, p, "view")
 }
