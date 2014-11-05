@@ -10,6 +10,11 @@ Learn to write a blog framework from scratch in golang
 - $ cd src/github.com/ouyanggh/goblog
 - $ go run main.go
 
+**Usage**
+
+- enter: http://localhost:8080/
+- admin portal: http://localhost:8080/admin  admin/hello
+
 **TODO**
 
 1. go though `Writing Web Applications`_
