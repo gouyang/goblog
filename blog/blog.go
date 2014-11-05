@@ -78,11 +78,35 @@ func BlogEdit(w http.ResponseWriter, r *http.Request) {
 	renderTemplate(w, p, "edit")
 }
 
+func BlogDelete(w http.ResponseWriter, r *http.Request) {
+	title := r.URL.Path[len("/blog/delete/"):]
+	fmt.Println(title)
+	core.SqliteDelete(title)
+	http.Redirect(w, r, "/blogs/delete", http.StatusFound)
+}
+
+func BlogsDelete(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "<a href=\"/\">Home</a>")
+	fmt.Fprintf(w, "<h1>Blog posts ...</h1>")
+	titles := core.SqliteQuery()
+	for title, _ := range titles {
+		fmt.Fprintf(w, "<div><strong><em><a href=\"/blog/%s\">%s</a></em></strong></div><div><a href=\"/blog/delete/%s\">delete</a></div>", title, title, title)
+	}
+	title := r.URL.Path[len("/blog/"):]
+	core.SqliteDelete(title)
+}
+
+func BlogView(w http.ResponseWriter, r *http.Request) {
+	title := r.URL.Path[len("/blog/"):]
+	titles := core.SqliteQuery()
+	p := &Article{Title: title, Body: titles[title]}
+	renderTemplate(w, p, "view")
+}
+
 func BlogList(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "<a href=\"/\">Home</a>")
 	fmt.Fprintf(w, "<h1>Blog posts ...</h1>")
 	titles := core.SqliteQuery()
-	fmt.Println(titles)
 	for title, _ := range titles {
 		fmt.Fprintf(w, "<div><strong><em><a href=\"/blog/%s\">%s</a></em></strong></div>", title, title)
 	}
@@ -91,11 +115,4 @@ func BlogList(w http.ResponseWriter, r *http.Request) {
 	//	title := strings.Replace(f.Name(), ".txt", "", 1)
 	//	fmt.Fprintf(w, "<div><strong><em><a href=\"/blog/%s\">%s</a></em></strong></div>", title, title)
 	//}
-}
-
-func BlogView(w http.ResponseWriter, r *http.Request) {
-	title := r.URL.Path[len("/blog/"):]
-	titles := core.SqliteQuery()
-	p := &Article{Title: title, Body: titles[title]}
-	renderTemplate(w, p, "view")
 }
