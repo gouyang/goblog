@@ -25,6 +25,7 @@ func main() {
 	r.HandleFunc("/blog/save/{title}", blog.BlogSave)
 	r.HandleFunc("/blog/save/", blog.BlogSave)
 	r.HandleFunc("/blog/edit/{title}", blog.BlogEdit)
+	r.HandleFunc("/blog/update/{title}", blog.BlogUpdate)
 	http.Handle("/", r)
 	http.ListenAndServe(":8080", nil)
 }

@@ -1,7 +1,7 @@
 <a href="/">Home</a>
 <h1>Editing post {{.Title}} </h1>
 
-<form action="/blog/save/{{.Title}}" method="POST">
+<form action="/blog/update/{{.Title}}" method="POST">
   <div>Title: </br>
     <textarea name="title" rows="1" cols="80">{{printf "%s" .Title}}</textarea></div>
   </br>

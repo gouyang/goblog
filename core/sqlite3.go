@@ -45,6 +45,22 @@ func SqliteInsert(title string, body []byte) {
 	tx.Commit()
 }
 
+func SqliteUpdate(newtitle string, body []byte, title string) {
+	db, err := sql.Open("sqlite3", "./sqlite3.db")
+	LogFatal(err)
+
+	tx, err := db.Begin()
+	LogFatal(err)
+
+	stmt, err := tx.Prepare("update blog set title = ?, body = ? where title = ?")
+	LogFatal(err)
+	defer stmt.Close()
+
+	_, err = stmt.Exec(newtitle, body, title)
+	LogFatal(err)
+	tx.Commit()
+}
+
 func SqliteQuery() (titles map[string][]byte) {
 	db, err := sql.Open("sqlite3", "./sqlite3.db")
 	LogFatal(err)

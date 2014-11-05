@@ -61,6 +61,16 @@ func BlogSave(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/blog/"+title, http.StatusFound)
 }
 
+func BlogUpdate(w http.ResponseWriter, r *http.Request) {
+	title := r.URL.Path[len("/blog/update/"):]
+	newtitle := r.FormValue("title")
+	body := r.FormValue("body")
+	p := &Article{Title: newtitle, Body: []byte(body)}
+	//p.saveArticle()
+	core.SqliteUpdate(p.Title, p.Body, title)
+	http.Redirect(w, r, "/blog/"+newtitle, http.StatusFound)
+}
+
 func BlogEdit(w http.ResponseWriter, r *http.Request) {
 	title := r.URL.Path[len("/blog/edit/"):]
 	titles := core.SqliteQuery()
