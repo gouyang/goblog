@@ -1,7 +1,9 @@
 package main
 
 import (
+	httpauth "github.com/abbot/go-http-auth"
 	"github.com/gorilla/mux"
+	"github.com/ouyanggh/goblog/auth"
 	"github.com/ouyanggh/goblog/blog"
 	"github.com/ouyanggh/goblog/core"
 	"net/http"
@@ -17,8 +19,11 @@ func main() {
 	}
 	//core.SqliteInsert("test", []byte("test the sqlite3"))
 	//core.SqliteQuery()
+	authenticator := httpauth.NewBasicAuthenticator("localhost", auth.Secret)
+
 	r := mux.NewRouter()
 	r.HandleFunc("/", blog.DefaultView)
+	r.HandleFunc("/admin", authenticator.Wrap(auth.LoginAdmin))
 	r.HandleFunc("/blogs/", blog.BlogList)
 	r.HandleFunc("/blog/{title}", blog.BlogView)
 	r.HandleFunc("/blog/new/", blog.BlogNew)
