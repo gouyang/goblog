@@ -2,10 +2,12 @@ package core
 
 import (
 	"database/sql"
-	"fmt"
-	_ "github.com/mattn/go-sqlite3"
 	"log"
 	"os"
+	"time"
+
+	_ "github.com/mattn/go-sqlite3"
+	"github.com/ouyanggh/goblog/models"
 )
 
 func LogFatal(err error) {
@@ -21,7 +23,7 @@ func InitSqlite3DB() {
 	LogFatal(err)
 	defer db.Close()
 
-	sqlStmt := `create table blog (title text not null primary key, body blob);`
+	sqlStmt := `create table blog (ID integer not null primary key, title text not null, body blob);`
 	_, err = db.Exec(sqlStmt)
 	if err != nil {
 		log.Printf("%q: %s\n", err, sqlStmt)
@@ -29,18 +31,20 @@ func InitSqlite3DB() {
 	}
 }
 
-func SqliteInsert(title string, body []byte) {
+//func SqliteInsert(title string, body []byte) {
+func SqliteInsert(p *models.Post) {
+	now := time.Now().Unix()
 	db, err := sql.Open("sqlite3", "./sqlite3.db")
 	LogFatal(err)
 
 	tx, err := db.Begin()
 	LogFatal(err)
 
-	stmt, err := tx.Prepare("insert into blog values(?, ?)")
+	stmt, err := tx.Prepare("insert into blog values(?, ?, ?)")
 	LogFatal(err)
 	defer stmt.Close()
 
-	_, err = stmt.Exec(title, body)
+	_, err = stmt.Exec(now, p.Title, p.Body)
 	LogFatal(err)
 	tx.Commit()
 }
@@ -61,7 +65,7 @@ func SqliteDelete(title string) {
 	tx.Commit()
 }
 
-func SqliteUpdate(newtitle string, body []byte, title string) {
+func SqliteUpdate(np *models.Post, title string) {
 	db, err := sql.Open("sqlite3", "./sqlite3.db")
 	LogFatal(err)
 
@@ -72,12 +76,27 @@ func SqliteUpdate(newtitle string, body []byte, title string) {
 	LogFatal(err)
 	defer stmt.Close()
 
-	_, err = stmt.Exec(newtitle, body, title)
+	_, err = stmt.Exec(np.Title, np.Body, title)
 	LogFatal(err)
 	tx.Commit()
 }
 
-func SqliteQuery() (titles map[string][]byte) {
+func SqliteQuery(title string) string {
+	db, err := sql.Open("sqlite3", "./sqlite3.db")
+	LogFatal(err)
+
+	stmt, err := db.Prepare("select body from blog where title = ?")
+	LogFatal(err)
+	defer stmt.Close()
+
+	var body string
+	err = stmt.QueryRow(title).Scan(&body)
+	LogFatal(err)
+
+	return body
+}
+
+func SqliteQueryAll() (titles map[string][]byte) {
 	db, err := sql.Open("sqlite3", "./sqlite3.db")
 	LogFatal(err)
 
@@ -90,8 +109,6 @@ func SqliteQuery() (titles map[string][]byte) {
 		var body []byte
 		rows.Scan(&title, &body)
 		titles[title] = body
-		fmt.Println(title, string(body))
 	}
-	fmt.Println(titles)
 	return titles
 }
