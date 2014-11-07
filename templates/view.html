@@ -8,5 +8,5 @@
 <h1>{{.Title}}</h1>
 <p><a href="/blog/update/{{.Title}}">edit</a></p>
 <em>Created on {{.Created}}</em>
-<div>{{printf "%s" .Body}}</div>
+<div>{{printf "%s" .Body | html}}</div>
 </html>

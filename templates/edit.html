@@ -1,18 +1,20 @@
 <!DOCTYPE HTML>
 <html>
-<head>
-<link rel="stylesheet" href="/static/css/div.css">
-</head>
-<a href="/">Home</a>
-<h1>Editing post {{.Title}} </h1>
+  <head>
+    <link rel="stylesheet" href="/static/css/div.css">
+  </head>
+  <body>
+    <a href="/">Home</a>
+    <h1>Editing post {{.Title}} </h1>
 
-<form action="/blog/saveupdate/" method="POST">
-  <div>Title: </br>
-    <textarea name="title" rows="1" cols="80">{{printf "%s" .Title}}</textarea></div>
-  </br>
-  <div>Content: </br>
-    <textarea name="body" rows="20" cols="80">{{printf "%s" .Body}}</textarea></div>
-  </br>
-  <div><input type="submit" value="Save"></div>
-</form>
+      <form action="/blog/saveupdate/" method="POST">
+        <div>Title: </br>
+          <textarea name="title" rows="1" cols="80">{{printf "%s" .Title}}</textarea></div>
+          </br>
+        <div>Content: </br>
+          <textarea name="body" rows="20" cols="80">{{printf "%s" .Body}}</textarea></div>
+          </br>
+        <div><input type="submit" value="Save"></div>
+      </form>
+  </body>
 </html>
