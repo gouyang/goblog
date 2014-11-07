@@ -23,15 +23,11 @@ func InitSqlite3DB() {
 	LogFatal(err)
 	defer db.Close()
 
-	sqlStmt := `create table blog (ID integer not null primary key, title text not null, body blob);`
+	sqlStmt := `CREATE TABLE blog (id INTEGER NOT NULL PRIMARY KEY, title TEXT NOT NULL, body BLOB);`
 	_, err = db.Exec(sqlStmt)
-	if err != nil {
-		log.Printf("%q: %s\n", err, sqlStmt)
-		return
-	}
+	LogFatal(err)
 }
 
-//func SqliteInsert(title string, body []byte) {
 func SqliteInsert(p *models.Post) {
 	now := time.Now().Unix()
 	db, err := sql.Open("sqlite3", "./sqlite3.db")
@@ -40,7 +36,17 @@ func SqliteInsert(p *models.Post) {
 	tx, err := db.Begin()
 	LogFatal(err)
 
-	stmt, err := tx.Prepare("insert into blog values(?, ?, ?)")
+	stmtq, err := db.Prepare("SELECT id FROM blog WHERE id = ?")
+	LogFatal(err)
+	defer stmtq.Close()
+
+	var nid int64
+	err = stmtq.QueryRow(now).Scan(&nid)
+	if err == nil {
+		now = now + 1
+	}
+
+	stmt, err := tx.Prepare("INSERT INTO blog VALUES(?, ?, ?)")
 	LogFatal(err)
 	defer stmt.Close()
 
@@ -56,7 +62,7 @@ func SqliteDelete(title string) {
 	tx, err := db.Begin()
 	LogFatal(err)
 
-	stmt, err := tx.Prepare("delete from blog where title = ?")
+	stmt, err := tx.Prepare("DELETE FROM blog WHERE title = ?")
 	LogFatal(err)
 	defer stmt.Close()
 
@@ -72,7 +78,7 @@ func SqliteUpdate(np *models.Post, title string) {
 	tx, err := db.Begin()
 	LogFatal(err)
 
-	stmt, err := tx.Prepare("update blog set title = ?, body = ? where title = ?")
+	stmt, err := tx.Prepare("UPDATE blog SET title = ?, body = ? WHERE title = ?")
 	LogFatal(err)
 	defer stmt.Close()
 
@@ -85,7 +91,7 @@ func SqliteQuery(title string) string {
 	db, err := sql.Open("sqlite3", "./sqlite3.db")
 	LogFatal(err)
 
-	stmt, err := db.Prepare("select body from blog where title = ?")
+	stmt, err := db.Prepare("SELECT body FROM blog WHERE title = ?")
 	LogFatal(err)
 	defer stmt.Close()
 
@@ -100,7 +106,7 @@ func SqliteQueryAll() (titles map[string][]byte) {
 	db, err := sql.Open("sqlite3", "./sqlite3.db")
 	LogFatal(err)
 
-	rows, err := db.Query("select title, body from blog")
+	rows, err := db.Query("SELECT title, body FROM blog")
 	LogFatal(err)
 	defer rows.Close()
 	titles = make(map[string][]byte)
