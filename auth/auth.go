@@ -1,10 +1,19 @@
 package auth
 
 import (
-	"fmt"
-	auth "github.com/abbot/go-http-auth"
+	"html/template"
+	"log"
 	"net/http"
+	"path"
+
+	httpauth "github.com/abbot/go-http-auth"
 )
+
+func CheckErr(err error) {
+	if err != nil {
+		log.Fatal(err)
+	}
+}
 
 func Secret(user, realm string) string {
 	if user == "admin" {
@@ -13,8 +22,10 @@ func Secret(user, realm string) string {
 	return ""
 }
 
-func LoginAdmin(w http.ResponseWriter, r *auth.AuthenticatedRequest) {
-	fmt.Fprint(w, "<p><a href=\"/\">Home</a></p>")
-	fmt.Fprint(w, "<p><a href=\"/blog/new/\">Add New Post</a></p>")
-	fmt.Fprint(w, "<p><a href=\"/blogs/delete\">Delete</a></p>")
+func LoginAdmin(w http.ResponseWriter, r *httpauth.AuthenticatedRequest) {
+	tmpl := path.Join("templates", "admin.html")
+	t, err := template.ParseFiles(tmpl)
+	CheckErr(err)
+	err = t.Execute(w, "")
+	CheckErr(err)
 }

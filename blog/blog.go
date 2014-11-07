@@ -65,7 +65,7 @@ func SaveUpdate(w http.ResponseWriter, r *http.Request) {
 func DeletePost(w http.ResponseWriter, r *http.Request) {
 	title := r.URL.Path[len("/blog/delete/"):]
 	core.SqliteDelete(title)
-	http.Redirect(w, r, "/blogs/delete", http.StatusFound)
+	http.Redirect(w, r, "/blogs/delete/", http.StatusFound)
 }
 
 func PostsForDelete(w http.ResponseWriter, r *http.Request) {

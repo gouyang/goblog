@@ -1,0 +1,5 @@
+func LoginAdmin(w http.ResponseWriter, r *auth.AuthenticatedRequest) {
+	tmpl := path.Join("templates", "admin.html")
+	t, _ := template.ParseFiles(tmpl)
+	t.Execute(w, "")
+}

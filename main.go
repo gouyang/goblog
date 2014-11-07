@@ -32,7 +32,7 @@ func main() {
 	r.HandleFunc("/blog/save/", blog.SavePost)
 	r.HandleFunc("/blog/update/{title}", blog.UpdatePost)
 	r.HandleFunc("/blog/saveupdate/", blog.SaveUpdate)
-	r.HandleFunc("/blogs/delete", blog.PostsForDelete)
+	r.HandleFunc("/blogs/delete/", blog.PostsForDelete)
 	r.HandleFunc("/blog/delete/{title}", blog.DeletePost)
 	http.Handle("/static/", http.StripPrefix("/static", fs))
 	http.Handle("/", r)
