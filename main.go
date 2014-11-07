@@ -21,6 +21,8 @@ func main() {
 
 	authenticator := httpauth.NewBasicAuthenticator("localhost", auth.Secret)
 
+	fs := http.FileServer(http.Dir("static"))
+
 	r := mux.NewRouter()
 	r.HandleFunc("/", blog.HomePage)
 	r.HandleFunc("/admin", authenticator.Wrap(auth.LoginAdmin))
@@ -32,6 +34,7 @@ func main() {
 	r.HandleFunc("/blog/saveupdate/", blog.SaveUpdate)
 	r.HandleFunc("/blogs/delete", blog.PostsForDelete)
 	r.HandleFunc("/blog/delete/{title}", blog.DeletePost)
+	http.Handle("/static/", http.StripPrefix("/static", fs))
 	http.Handle("/", r)
 	http.ListenAndServe(":8080", nil)
 }

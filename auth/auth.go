@@ -14,7 +14,7 @@ func Secret(user, realm string) string {
 }
 
 func LoginAdmin(w http.ResponseWriter, r *auth.AuthenticatedRequest) {
-	fmt.Fprint(w, "<h1><a href=\"/\">Home</a></h1>")
-	fmt.Fprint(w, "<h1><a href=\"/blog/new/\">Add New Post</a></h1>")
-	fmt.Fprint(w, "<h1><a href=\"/blogs/delete\">Delete</a></h1>")
+	fmt.Fprint(w, "<p><a href=\"/\">Home</a></p>")
+	fmt.Fprint(w, "<p><a href=\"/blog/new/\">Add New Post</a></p>")
+	fmt.Fprint(w, "<p><a href=\"/blogs/delete\">Delete</a></p>")
 }

@@ -73,7 +73,7 @@ func PostsForDelete(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "<h1>Blog posts ...</h1>")
 	titles := core.SqliteQueryAllPost()
 	for title, _ := range titles {
-		fmt.Fprintf(w, "<div><strong><em><a href=\"/blog/%s\">%s</a></em></strong></div><div><a href=\"/blog/delete/%s\">delete</a></div>", title, title, title)
+		fmt.Fprintf(w, "<div><strong><em><a href=\"/blog/%s\">%s</a></em></strong></div><div><a href=\"/blog/delete/%s\">delete</a></div></br>", title, title, title)
 	}
 	title := r.URL.Path[len("/blog/"):]
 	core.SqliteDelete(title)
@@ -87,13 +87,18 @@ func ViewPost(w http.ResponseWriter, r *http.Request) {
 }
 
 func ListPost(w http.ResponseWriter, r *http.Request) {
+	fmt.Fprintf(w, "<html>")
+	fmt.Fprintf(w, "<head>")
+	fmt.Fprintf(w, "<link rel=\"stylesheet\" href=\"/static/css/div.css\">")
+	fmt.Fprintf(w, "</head>")
 	fmt.Fprintf(w, "<a href=\"/\">Home</a>")
 	fmt.Fprintf(w, "<h1>Blog posts ...</h1>")
 	titles := core.SqliteQueryAllPost()
 	for title, _ := range titles {
 		fmt.Fprintf(w, "<div><strong><em><a href=\"/blog/%s\">%s</a></em></strong></div>", title, title)
 		fmt.Fprintf(w, "</br>")
-		fmt.Fprintf(w, "<div>Created on %s</br></br>%s</div>", titles[title].Created, titles[title].Body)
+		fmt.Fprintf(w, "Created on %s</br></br><div class=\"content\">%s</div>", titles[title].Created, titles[title].Body)
 		fmt.Fprintf(w, "</br></br></br>")
 	}
+	fmt.Fprintf(w, "</html>")
 }
