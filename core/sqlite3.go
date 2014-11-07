@@ -23,7 +23,7 @@ func InitSqlite3DB() {
 	LogFatal(err)
 	defer db.Close()
 
-	sqlStmt := `CREATE TABLE blog (id INTEGER NOT NULL PRIMARY KEY, title TEXT NOT NULL, body BLOB);`
+	sqlStmt := `CREATE TABLE blog (id INTEGER NOT NULL PRIMARY KEY, title TEXT NOT NULL, created TIMESTAMP, body BLOB);`
 	_, err = db.Exec(sqlStmt)
 	LogFatal(err)
 }
@@ -46,11 +46,11 @@ func SqliteInsert(p *models.Post) {
 		now = now + 1
 	}
 
-	stmt, err := tx.Prepare("INSERT INTO blog VALUES(?, ?, ?)")
+	stmt, err := tx.Prepare("INSERT INTO blog VALUES(?, ?, ?, ?)")
 	LogFatal(err)
 	defer stmt.Close()
 
-	_, err = stmt.Exec(now, p.Title, p.Body)
+	_, err = stmt.Exec(now, p.Title, p.Created, p.Body)
 	LogFatal(err)
 	tx.Commit()
 }
@@ -78,34 +78,33 @@ func SqliteUpdate(np *models.Post, title string) {
 	tx, err := db.Begin()
 	LogFatal(err)
 
-	stmt, err := tx.Prepare("UPDATE blog SET title = ?, body = ? WHERE title = ?")
+	stmt, err := tx.Prepare("UPDATE blog SET title = ?, created = ?, body = ? WHERE title = ?")
 	LogFatal(err)
 	defer stmt.Close()
 
-	_, err = stmt.Exec(np.Title, np.Body, title)
+	_, err = stmt.Exec(np.Title, np.Created, np.Body, title)
 	LogFatal(err)
 	tx.Commit()
 }
 
-func SqliteQuery(title string) string {
+func SqliteQuery(title string) (p *models.Post) {
 	db, err := sql.Open("sqlite3", "./sqlite3.db")
 	LogFatal(err)
 
-	stmt, err := db.Prepare("SELECT body FROM blog WHERE title = ?")
+	stmt, err := db.Prepare("SELECT title, created, body FROM blog WHERE title = ?")
 	LogFatal(err)
 	defer stmt.Close()
 
-	var body string
-	err = stmt.QueryRow(title).Scan(&body)
+	p = new(models.Post)
+	err = stmt.QueryRow(title).Scan(&p.Title, &p.Created, &p.Body)
 	LogFatal(err)
 
-	return body
+	return
 }
 
 func SqliteQueryAll() (titles map[string][]byte) {
 	db, err := sql.Open("sqlite3", "./sqlite3.db")
 	LogFatal(err)
-
 	rows, err := db.Query("SELECT title, body FROM blog")
 	LogFatal(err)
 	defer rows.Close()
@@ -115,6 +114,28 @@ func SqliteQueryAll() (titles map[string][]byte) {
 		var body []byte
 		rows.Scan(&title, &body)
 		titles[title] = body
+
 	}
 	return titles
+
+}
+
+func SqliteQueryAllPost() (titles map[string]models.Post) {
+	db, err := sql.Open("sqlite3", "./sqlite3.db")
+	LogFatal(err)
+	rows, err := db.Query("SELECT title, created, body FROM blog")
+	LogFatal(err)
+	defer rows.Close()
+	titles = make(map[string]models.Post)
+	for rows.Next() {
+		var title string
+		var created time.Time
+		var body []byte
+		rows.Scan(&title, &created, &body)
+		p := models.Post{Title: title, Created: created, Body: body}
+		titles[title] = p
+
+	}
+	return titles
+
 }

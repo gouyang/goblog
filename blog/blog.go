@@ -5,6 +5,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"time"
 
 	"github.com/ouyanggh/goblog/core"
 	"github.com/ouyanggh/goblog/models"
@@ -36,15 +37,17 @@ func NewPost(w http.ResponseWriter, r *http.Request) {
 func SavePost(w http.ResponseWriter, r *http.Request) {
 	title := r.FormValue("title")
 	body := r.FormValue("body")
-	p := &models.Post{Title: title, Body: []byte(body)}
+	now := time.Now().UTC()
+	p := &models.Post{Title: title, Created: now, Body: []byte(body)}
 	core.SqliteInsert(p)
 	http.Redirect(w, r, "/blog/"+title, http.StatusFound)
+	//http.Redirect(w, r, "/blogs", http.StatusFound)
 }
 
 func UpdatePost(w http.ResponseWriter, r *http.Request) {
 	title := r.URL.Path[len("/blog/update/"):]
-	body := core.SqliteQuery(title)
-	p := &models.Post{Title: title, Body: []byte(body)}
+	p := core.SqliteQuery(title)
+	//p := &models.Post{Title: title, Body: []byte(body)}
 	oldtitle = title
 	renderTemplate(w, p, "edit")
 }
@@ -52,7 +55,9 @@ func UpdatePost(w http.ResponseWriter, r *http.Request) {
 func SaveUpdate(w http.ResponseWriter, r *http.Request) {
 	title := r.FormValue("title")
 	body := r.FormValue("body")
-	p := &models.Post{Title: title, Body: []byte(body)}
+	now := time.Now().UTC()
+	p := &models.Post{Title: title, Created: now, Body: []byte(body)}
+	//p := &models.Post{Title: title, Body: []byte(body)}
 	core.SqliteUpdate(p, oldtitle)
 	http.Redirect(w, r, "/blog/"+title, http.StatusFound)
 }
@@ -66,7 +71,7 @@ func DeletePost(w http.ResponseWriter, r *http.Request) {
 func PostsForDelete(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "<a href=\"/\">Home</a>")
 	fmt.Fprintf(w, "<h1>Blog posts ...</h1>")
-	titles := core.SqliteQueryAll()
+	titles := core.SqliteQueryAllPost()
 	for title, _ := range titles {
 		fmt.Fprintf(w, "<div><strong><em><a href=\"/blog/%s\">%s</a></em></strong></div><div><a href=\"/blog/delete/%s\">delete</a></div>", title, title, title)
 	}
@@ -76,16 +81,19 @@ func PostsForDelete(w http.ResponseWriter, r *http.Request) {
 
 func ViewPost(w http.ResponseWriter, r *http.Request) {
 	title := r.URL.Path[len("/blog/"):]
-	titles := core.SqliteQueryAll()
-	p := &models.Post{Title: title, Body: titles[title]}
+	p := core.SqliteQuery(title)
+	//p := &models.Post{Title: title, Body: []byte(body)}
 	renderTemplate(w, p, "view")
 }
 
 func ListPost(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprintf(w, "<a href=\"/\">Home</a>")
 	fmt.Fprintf(w, "<h1>Blog posts ...</h1>")
-	titles := core.SqliteQueryAll()
+	titles := core.SqliteQueryAllPost()
 	for title, _ := range titles {
 		fmt.Fprintf(w, "<div><strong><em><a href=\"/blog/%s\">%s</a></em></strong></div>", title, title)
+		fmt.Fprintf(w, "</br>")
+		fmt.Fprintf(w, "<div>Created on %s</br></br>%s</div>", titles[title].Created, titles[title].Body)
+		fmt.Fprintf(w, "</br></br></br>")
 	}
 }
