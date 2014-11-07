@@ -90,10 +90,10 @@ func ListPosts(w http.ResponseWriter, r *http.Request) {
 	CheckErr(err)
 }
 
-func DeleteLists(w http.ResponseWriter, r *http.Request) {
+func ManagePosts(w http.ResponseWriter, r *http.Request) {
 	var p models.Blogs
 	p.Posts = core.SqliteQueryAllPost()
-	tmpl := path.Join("templates", "delete.html")
+	tmpl := path.Join("templates", "exists.html")
 	t, err := template.ParseFiles(tmpl)
 	CheckErr(err)
 	err = t.Execute(w, p)
@@ -109,5 +109,12 @@ func ViewPost(w http.ResponseWriter, r *http.Request) {
 func DeletePost(w http.ResponseWriter, r *http.Request) {
 	title := r.URL.Path[len("/blog/delete/"):]
 	core.SqliteDelete(title)
-	http.Redirect(w, r, "/blogs/delete/", http.StatusFound)
+	http.Redirect(w, r, "/blogs/manage/", http.StatusFound)
+}
+
+// cleanup by delete database file and initialize it again
+// all exist data will be lost
+func CleanUp(w http.ResponseWriter, r *http.Request) {
+	core.InitSqlite3DB()
+	http.Redirect(w, r, "/blogs/manage/", http.StatusFound)
 }

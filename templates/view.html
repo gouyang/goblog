@@ -7,7 +7,6 @@
     <a href="/">Home</a>
     <a href="/blogs">Blogs</a>
     <h1>{{.Title}}</h1>
-      <a href="/blog/update/{{.Title}}">edit</a>
       </br>
       <em>Created on {{.Created}}</em>
       <div>{{printf "%s" .Body | html}}</div>

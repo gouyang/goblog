@@ -1,0 +1,27 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="stylesheet" href="/static/css/div.css">
+  </head>
+  <body>
+    <a href="/">Home</a>
+    <a href="/blogs">Blogs</a>
+    <h1>Blogs ...</h1>
+    {{with .Posts}}
+      {{range .}}
+        <div>
+          <strong>
+            <em>
+              <a href="/blog/{{.Title}}">{{.Title}}</a>
+            </em>
+          </strong>
+        </div>
+        <div>
+          <a href="/blog/update/{{.Title}}">update</a>
+          <a href="/blog/delete/{{.Title}}">delete</a>
+        </div>
+        </br>
+      {{end}}
+    {{end}}
+  </body>
+</html>
