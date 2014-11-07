@@ -9,3 +9,7 @@ type Post struct {
 	Body    []byte
 	Created time.Time
 }
+
+type Blogs struct {
+	Posts []Post
+}

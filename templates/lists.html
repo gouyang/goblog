@@ -1,0 +1,18 @@
+<!DOCTYPE HTML>
+<html>
+  <head>
+    <link rel="stylesheet" href="/static/css/div.css">
+  </head>
+  <body>
+    <a href="/">Home</a>
+    <h1>Blogs ...</h1>
+    {{with .Posts}}
+      {{range .}}
+        <div><strong><em><a href="/blog/{{.Title}}">{{.Title}}</a></em></strong></div>
+        {{.Created}}</br></br>
+        <div class="content">{{printf "%s" .Body}}</div>
+        <div></br></br></div>
+      {{end}}
+    {{end}}
+  </body>
+</html>

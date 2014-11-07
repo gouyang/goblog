@@ -120,22 +120,19 @@ func SqliteQueryAll() (titles map[string][]byte) {
 
 }
 
-func SqliteQueryAllPost() (titles map[string]models.Post) {
+func SqliteQueryAllPost() (p []models.Post) {
 	db, err := sql.Open("sqlite3", "./sqlite3.db")
 	LogFatal(err)
 	rows, err := db.Query("SELECT title, created, body FROM blog")
 	LogFatal(err)
 	defer rows.Close()
-	titles = make(map[string]models.Post)
 	for rows.Next() {
 		var title string
 		var created time.Time
 		var body []byte
 		rows.Scan(&title, &created, &body)
-		p := models.Post{Title: title, Created: created, Body: body}
-		titles[title] = p
-
+		post := models.Post{Title: title, Created: created, Body: body}
+		p = append(p, post)
 	}
-	return titles
-
+	return
 }
