@@ -46,13 +46,13 @@ func NewPost(w http.ResponseWriter, r *http.Request) {
 func SavePost(w http.ResponseWriter, r *http.Request) {
 	title := r.FormValue("title")
 	body := r.FormValue("body")
-	now := time.Now().UTC()
+	now := time.Now()
 	p := &models.Post{
 		Title:   title,
 		Created: now,
 		Body:    []byte(body),
 	}
-	core.SqliteInsert(p)
+	core.Insert(p)
 	http.Redirect(w, r, "/blog/"+title, http.StatusFound)
 }
 
@@ -62,27 +62,27 @@ func UpdatePost(w http.ResponseWriter, r *http.Request) {
 	// save global oldtitle for late use
 	oldtitle = title
 
-	p := core.SqliteQuery(title)
+	p := core.Query(title)
 	renderTemplate(w, p, "edit")
 }
 
 func SaveUpdate(w http.ResponseWriter, r *http.Request) {
 	title := r.FormValue("title")
 	body := r.FormValue("body")
-	now := time.Now().UTC()
+	now := time.Now()
 	p := &models.Post{
 		Title:   title,
 		Created: now,
 		Body:    []byte(body),
 	}
 	// update post by change its title and content
-	core.SqliteUpdate(p, oldtitle)
+	core.Update(p, oldtitle)
 	http.Redirect(w, r, "/blog/"+title, http.StatusFound)
 }
 
 func ListPosts(w http.ResponseWriter, r *http.Request) {
 	var p models.Blogs
-	p.Posts = core.SqliteQueryAllPost()
+	p.Posts = core.QueryAllPost()
 	tmpl := path.Join("templates", "lists.html")
 	t, err := template.ParseFiles(tmpl)
 	CheckErr(err)
@@ -92,7 +92,7 @@ func ListPosts(w http.ResponseWriter, r *http.Request) {
 
 func ManagePosts(w http.ResponseWriter, r *http.Request) {
 	var p models.Blogs
-	p.Posts = core.SqliteQueryAllPost()
+	p.Posts = core.QueryAllPost()
 	tmpl := path.Join("templates", "exists.html")
 	t, err := template.ParseFiles(tmpl)
 	CheckErr(err)
@@ -102,19 +102,19 @@ func ManagePosts(w http.ResponseWriter, r *http.Request) {
 
 func ViewPost(w http.ResponseWriter, r *http.Request) {
 	title := r.URL.Path[len("/blog/"):]
-	p := core.SqliteQuery(title)
+	p := core.Query(title)
 	renderTemplate(w, p, "view")
 }
 
 func DeletePost(w http.ResponseWriter, r *http.Request) {
 	title := r.URL.Path[len("/blog/delete/"):]
-	core.SqliteDelete(title)
+	core.Delete(title)
 	http.Redirect(w, r, "/blogs/manage/", http.StatusFound)
 }
 
 // cleanup by delete database file and initialize it again
 // all exist data will be lost
 func CleanUp(w http.ResponseWriter, r *http.Request) {
-	core.InitSqlite3DB()
+	core.InitDB()
 	http.Redirect(w, r, "/blogs/manage/", http.StatusFound)
 }

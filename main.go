@@ -2,7 +2,6 @@ package main
 
 import (
 	"net/http"
-	"os"
 
 	httpauth "github.com/abbot/go-http-auth"
 	"github.com/gorilla/mux"
@@ -15,9 +14,7 @@ const SQLITEDBFILE = "sqlite3.db"
 
 func main() {
 	// create database file
-	if _, err := os.Stat(SQLITEDBFILE); err != nil {
-		core.InitSqlite3DB()
-	}
+	core.InitDB()
 
 	authenticator := httpauth.NewBasicAuthenticator("localhost", auth.Secret)
 
