@@ -7,7 +7,7 @@ import (
 	"path"
 	"time"
 
-	"github.com/ouyanggh/goblog/core"
+	"github.com/ouyanggh/goblog/core/mysql"
 	"github.com/ouyanggh/goblog/models"
 )
 
@@ -52,7 +52,7 @@ func SavePost(w http.ResponseWriter, r *http.Request) {
 		Created: now,
 		Body:    []byte(body),
 	}
-	core.Insert(p)
+	mysql.Insert(p)
 	http.Redirect(w, r, "/blog/"+title, http.StatusFound)
 }
 
@@ -62,7 +62,7 @@ func UpdatePost(w http.ResponseWriter, r *http.Request) {
 	// save global oldtitle for late use
 	oldtitle = title
 
-	p := core.Query(title)
+	p := mysql.Query(title)
 	renderTemplate(w, p, "edit")
 }
 
@@ -76,13 +76,13 @@ func SaveUpdate(w http.ResponseWriter, r *http.Request) {
 		Body:    []byte(body),
 	}
 	// update post by change its title and content
-	core.Update(p, oldtitle)
+	mysql.Update(p, oldtitle)
 	http.Redirect(w, r, "/blog/"+title, http.StatusFound)
 }
 
 func ListPosts(w http.ResponseWriter, r *http.Request) {
 	var p models.Blogs
-	p.Posts = core.QueryAllPost()
+	p.Posts = mysql.QueryAllPost()
 	tmpl := path.Join("templates", "lists.html")
 	t, err := template.ParseFiles(tmpl)
 	CheckErr(err)
@@ -92,7 +92,7 @@ func ListPosts(w http.ResponseWriter, r *http.Request) {
 
 func ManagePosts(w http.ResponseWriter, r *http.Request) {
 	var p models.Blogs
-	p.Posts = core.QueryAllPost()
+	p.Posts = mysql.QueryAllPost()
 	tmpl := path.Join("templates", "exists.html")
 	t, err := template.ParseFiles(tmpl)
 	CheckErr(err)
@@ -102,19 +102,19 @@ func ManagePosts(w http.ResponseWriter, r *http.Request) {
 
 func ViewPost(w http.ResponseWriter, r *http.Request) {
 	title := r.URL.Path[len("/blog/"):]
-	p := core.Query(title)
+	p := mysql.Query(title)
 	renderTemplate(w, p, "view")
 }
 
 func DeletePost(w http.ResponseWriter, r *http.Request) {
 	title := r.URL.Path[len("/blog/delete/"):]
-	core.Delete(title)
+	mysql.Delete(title)
 	http.Redirect(w, r, "/blogs/manage/", http.StatusFound)
 }
 
 // cleanup by delete database file and initialize it again
 // all exist data will be lost
 func CleanUp(w http.ResponseWriter, r *http.Request) {
-	core.InitDB()
+	mysql.InitDB()
 	http.Redirect(w, r, "/blogs/manage/", http.StatusFound)
 }

@@ -1,11 +1,12 @@
-package core
+package sqlite
 
 import (
 	"database/sql"
 	"log"
+	"os"
 	"time"
 
-	_ "github.com/go-sql-driver/mysql"
+	_ "github.com/mattn/go-sqlite3"
 	"github.com/ouyanggh/goblog/models"
 )
 
@@ -16,7 +17,9 @@ func LogFatal(err error) {
 }
 
 func InitDB() {
-	db, err := sql.Open("mysql", "admin:password@/test?parseTime=true")
+	os.Remove("./sqlite3.db")
+
+	db, err := sql.Open("sqlite3", "./sqlite3.db")
 	LogFatal(err)
 	defer db.Close()
 
@@ -27,7 +30,7 @@ func InitDB() {
 
 func Insert(p *models.Post) {
 	now := time.Now().Unix()
-	db, err := sql.Open("mysql", "admin:password@/test?parseTime=true")
+	db, err := sql.Open("sqlite3", "./sqlite3.db")
 	LogFatal(err)
 
 	tx, err := db.Begin()
@@ -53,7 +56,7 @@ func Insert(p *models.Post) {
 }
 
 func Delete(title string) {
-	db, err := sql.Open("mysql", "admin:password@/test?parseTime=true")
+	db, err := sql.Open("sqlite3", "./sqlite3.db")
 	LogFatal(err)
 
 	tx, err := db.Begin()
@@ -69,7 +72,7 @@ func Delete(title string) {
 }
 
 func Update(np *models.Post, title string) {
-	db, err := sql.Open("mysql", "admin:password@/test?parseTime=true")
+	db, err := sql.Open("sqlite3", "./sqlite3.db")
 	LogFatal(err)
 
 	tx, err := db.Begin()
@@ -85,7 +88,7 @@ func Update(np *models.Post, title string) {
 }
 
 func Query(title string) (p *models.Post) {
-	db, err := sql.Open("mysql", "admin:password@/test?parseTime=true")
+	db, err := sql.Open("sqlite3", "./sqlite3.db")
 	LogFatal(err)
 
 	stmt, err := db.Prepare("SELECT title, created, body FROM blog WHERE title = ?")
@@ -100,7 +103,7 @@ func Query(title string) (p *models.Post) {
 }
 
 func QueryAll() (titles map[string][]byte) {
-	db, err := sql.Open("mysql", "admin:password@/test?parseTime=true")
+	db, err := sql.Open("sqlite3", "./sqlite3.db")
 	LogFatal(err)
 	rows, err := db.Query("SELECT title, body FROM blog")
 	LogFatal(err)
@@ -118,7 +121,7 @@ func QueryAll() (titles map[string][]byte) {
 }
 
 func QueryAllPost() (p []models.Post) {
-	db, err := sql.Open("mysql", "admin:password@/test?parseTime=true")
+	db, err := sql.Open("sqlite3", "./sqlite3.db")
 	LogFatal(err)
 	rows, err := db.Query("SELECT title, created, body FROM blog")
 	LogFatal(err)

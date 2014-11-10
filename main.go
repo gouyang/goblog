@@ -7,14 +7,14 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/ouyanggh/goblog/auth"
 	"github.com/ouyanggh/goblog/blog"
-	"github.com/ouyanggh/goblog/core"
+	"github.com/ouyanggh/goblog/core/mysql"
 )
 
 const SQLITEDBFILE = "sqlite3.db"
 
 func main() {
 	// create database file
-	core.InitDB()
+	mysql.InitDB()
 
 	authenticator := httpauth.NewBasicAuthenticator("localhost", auth.Secret)
 

@@ -1,12 +1,11 @@
-package core
+package mysql
 
 import (
 	"database/sql"
 	"log"
-	"os"
 	"time"
 
-	_ "github.com/mattn/go-sqlite3"
+	_ "github.com/go-sql-driver/mysql"
 	"github.com/ouyanggh/goblog/models"
 )
 
@@ -16,10 +15,8 @@ func LogFatal(err error) {
 	}
 }
 
-func InitSqlite3DB() {
-	os.Remove("./sqlite3.db")
-
-	db, err := sql.Open("sqlite3", "./sqlite3.db")
+func InitDB() {
+	db, err := sql.Open("mysql", "admin:password@/test?parseTime=true")
 	LogFatal(err)
 	defer db.Close()
 
@@ -28,9 +25,9 @@ func InitSqlite3DB() {
 	LogFatal(err)
 }
 
-func SqliteInsert(p *models.Post) {
+func Insert(p *models.Post) {
 	now := time.Now().Unix()
-	db, err := sql.Open("sqlite3", "./sqlite3.db")
+	db, err := sql.Open("mysql", "admin:password@/test?parseTime=true")
 	LogFatal(err)
 
 	tx, err := db.Begin()
@@ -55,8 +52,8 @@ func SqliteInsert(p *models.Post) {
 	tx.Commit()
 }
 
-func SqliteDelete(title string) {
-	db, err := sql.Open("sqlite3", "./sqlite3.db")
+func Delete(title string) {
+	db, err := sql.Open("mysql", "admin:password@/test?parseTime=true")
 	LogFatal(err)
 
 	tx, err := db.Begin()
@@ -71,8 +68,8 @@ func SqliteDelete(title string) {
 	tx.Commit()
 }
 
-func SqliteUpdate(np *models.Post, title string) {
-	db, err := sql.Open("sqlite3", "./sqlite3.db")
+func Update(np *models.Post, title string) {
+	db, err := sql.Open("mysql", "admin:password@/test?parseTime=true")
 	LogFatal(err)
 
 	tx, err := db.Begin()
@@ -87,8 +84,8 @@ func SqliteUpdate(np *models.Post, title string) {
 	tx.Commit()
 }
 
-func SqliteQuery(title string) (p *models.Post) {
-	db, err := sql.Open("sqlite3", "./sqlite3.db")
+func Query(title string) (p *models.Post) {
+	db, err := sql.Open("mysql", "admin:password@/test?parseTime=true")
 	LogFatal(err)
 
 	stmt, err := db.Prepare("SELECT title, created, body FROM blog WHERE title = ?")
@@ -102,8 +99,8 @@ func SqliteQuery(title string) (p *models.Post) {
 	return
 }
 
-func SqliteQueryAll() (titles map[string][]byte) {
-	db, err := sql.Open("sqlite3", "./sqlite3.db")
+func QueryAll() (titles map[string][]byte) {
+	db, err := sql.Open("mysql", "admin:password@/test?parseTime=true")
 	LogFatal(err)
 	rows, err := db.Query("SELECT title, body FROM blog")
 	LogFatal(err)
@@ -120,8 +117,8 @@ func SqliteQueryAll() (titles map[string][]byte) {
 
 }
 
-func SqliteQueryAllPost() (p []models.Post) {
-	db, err := sql.Open("sqlite3", "./sqlite3.db")
+func QueryAllPost() (p []models.Post) {
+	db, err := sql.Open("mysql", "admin:password@/test?parseTime=true")
 	LogFatal(err)
 	rows, err := db.Query("SELECT title, created, body FROM blog")
 	LogFatal(err)
