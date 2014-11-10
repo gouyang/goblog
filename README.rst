@@ -3,6 +3,16 @@ goblog
 
 Learn to write a blog framework from scratch in golang
 
+**Mysql pre-configure**
+The site will use mysql as its database, pre-setup:
+
+1. Create databse test for use:
+   MariaDB [test]> create database test;
+
+2. Grant admin user with grant option:
+   MariaDB [test]> grant all privileges on test.* to admin@'localhost' identified
+   by'password' with grant option;
+
 **Installation**
 
 - $ cd $GOPATH
