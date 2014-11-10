@@ -20,9 +20,12 @@ func InitDB() {
 	LogFatal(err)
 	defer db.Close()
 
-	sqlStmt := `CREATE TABLE blog (id INTEGER NOT NULL PRIMARY KEY, title TEXT NOT NULL, created TIMESTAMP, body BLOB);`
-	_, err = db.Exec(sqlStmt)
-	LogFatal(err)
+	exist := `select * from blog`
+	_, err = db.Exec(exist)
+	if err != nil {
+		sqlStmt := `CREATE TABLE blog (id INTEGER NOT NULL PRIMARY KEY, title TEXT NOT NULL, created TIMESTAMP, body BLOB);`
+		_, err = db.Exec(sqlStmt)
+	}
 }
 
 func Insert(p *models.Post) {
@@ -132,4 +135,12 @@ func QueryAllPost() (p []models.Post) {
 		p = append(p, post)
 	}
 	return
+}
+
+func Cleanup() {
+	db, err := sql.Open("mysql", "admin:password@/test?parseTime=true")
+	LogFatal(err)
+	defer db.Close()
+	exist := `delete from blog`
+	_, err = db.Exec(exist)
 }

@@ -9,6 +9,6 @@
     <h1>{{.Title}}</h1>
       </br>
       <em>Created on {{.Created}}</em>
-      <div>{{printf "%s" .Body | html}}</div>
+      <div>{{.Body | str2html}}</div>
   </body>
 </html>

@@ -3,7 +3,6 @@ package sqlite
 import (
 	"database/sql"
 	"log"
-	"os"
 	"time"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -17,15 +16,15 @@ func LogFatal(err error) {
 }
 
 func InitDB() {
-	os.Remove("./sqlite3.db")
-
 	db, err := sql.Open("sqlite3", "./sqlite3.db")
 	LogFatal(err)
 	defer db.Close()
-
-	sqlStmt := `CREATE TABLE blog (id INTEGER NOT NULL PRIMARY KEY, title TEXT NOT NULL, created TIMESTAMP, body BLOB);`
-	_, err = db.Exec(sqlStmt)
-	LogFatal(err)
+	exist := `select * from blog`
+	_, err = db.Exec(exist)
+	if err != nil {
+		sqlStmt := `CREATE TABLE blog (id INTEGER NOT NULL PRIMARY KEY, title TEXT NOT NULL, created TIMESTAMP, body BLOB);`
+		_, err = db.Exec(sqlStmt)
+	}
 }
 
 func Insert(p *models.Post) {
@@ -135,4 +134,12 @@ func QueryAllPost() (p []models.Post) {
 		p = append(p, post)
 	}
 	return
+}
+
+func Cleanup() {
+	db, err := sql.Open("sqlite3", "./sqlite3.db")
+	LogFatal(err)
+	defer db.Close()
+	stmt := `delete from blog`
+	_, err = db.Exec(stmt)
 }
