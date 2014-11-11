@@ -9,7 +9,7 @@
     {{with .Posts}}
       {{range .}}
         <div><strong><em><a href="/blog/{{.Title}}">{{.Title}}</a></em></strong></div>
-        {{.Created}}</br></br>
+        Created on {{.Created}}</br></br>
         <div class="content">{{.Body | markdown2htmltemplate}}</div>
         <div></br></br></div>
       {{end}}
