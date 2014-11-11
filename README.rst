@@ -44,7 +44,9 @@ no need setup.
     [mysqld]
 
     collation-server = utf8_unicode_ci
+
     init-connect='SET NAMES utf8'
+
     character-set-server = utf8
 
 and do below in db:
