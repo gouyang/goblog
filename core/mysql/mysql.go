@@ -101,7 +101,10 @@ func Query(title string) (p *models.Post) {
 
 	p = new(models.Post)
 	err = stmt.QueryRow(title).Scan(&p.Title, &p.Created, &p.Body)
-	LogFatal(err)
+	if err != nil {
+		p.Body = []byte("The post does not exist")
+		return
+	}
 	p.Created = p.Created.Local()
 
 	return
