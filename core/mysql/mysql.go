@@ -98,6 +98,7 @@ func Query(title string) (p *models.Post) {
 	p = new(models.Post)
 	err = stmt.QueryRow(title).Scan(&p.Title, &p.Created, &p.Body)
 	LogFatal(err)
+	p.Created = p.Created.Local()
 
 	return
 }
@@ -131,7 +132,7 @@ func QueryAllPost() (p []models.Post) {
 		var created time.Time
 		var body []byte
 		rows.Scan(&title, &created, &body)
-		post := models.Post{Title: title, Created: created, Body: body}
+		post := models.Post{Title: title, Created: created.Local(), Body: body}
 		p = append(p, post)
 	}
 	return
