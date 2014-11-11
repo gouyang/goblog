@@ -31,6 +31,23 @@ no need setup.
    MariaDB [test]> grant all privileges on test.* to admin@'localhost' identified
    by'password' with grant option;
 
+3. To set the default to UTF-8, you want to add the following to my.cnf
+
+   [client]
+   default-character-set=utf8
+
+   [mysql]
+   default-character-set=utf8
+
+   [mysqld]
+   collation-server = utf8_unicode_ci
+   init-connect='SET NAMES utf8'
+   character-set-server = utf8
+
+and do below in db:
+
+   ALTER TABLE Table CONVERT TO CHARACTER SET utf8 COLLATE utf8_unicode_ci; 
+
 
 Installation
 ------------
