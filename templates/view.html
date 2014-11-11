@@ -9,6 +9,6 @@
     <h1>{{.Title}}</h1>
       </br>
       <em>Created on {{.Created}}</em>
-      <div>{{.Body | str2html}}</div>
+      <div>{{.Body | markdown2htmltemplate}}</div>
   </body>
 </html>

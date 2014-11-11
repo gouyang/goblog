@@ -9,6 +9,7 @@ import (
 
 	db "github.com/ouyanggh/goblog/core/mysql"
 	"github.com/ouyanggh/goblog/models"
+	"github.com/russross/blackfriday"
 )
 
 var oldtitle string
@@ -17,8 +18,13 @@ func Str2html(raw []byte) template.HTML {
 	return template.HTML(string(raw))
 }
 
+func Markdown2HtmlTemplate(raw []byte) template.HTML {
+	return template.HTML(string(blackfriday.MarkdownCommon(raw)))
+}
+
 var funcMap = template.FuncMap{
-	"str2html": Str2html,
+	"str2html":              Str2html,
+	"markdown2htmltemplate": Markdown2HtmlTemplate,
 }
 
 func CheckErr(err error) {

@@ -10,7 +10,7 @@
       {{range .}}
         <div><strong><em><a href="/blog/{{.Title}}">{{.Title}}</a></em></strong></div>
         {{.Created}}</br></br>
-        <div class="content">{{.Body | str2html}}</div>
+        <div class="content">{{.Body | markdown2htmltemplate}}</div>
         <div></br></br></div>
       {{end}}
     {{end}}
