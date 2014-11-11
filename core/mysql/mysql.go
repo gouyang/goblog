@@ -25,6 +25,10 @@ func InitDB() {
 	if err != nil {
 		sqlStmt := `CREATE TABLE blog (id INTEGER NOT NULL PRIMARY KEY, title TEXT NOT NULL, created TIMESTAMP, body BLOB);`
 		_, err = db.Exec(sqlStmt)
+		LogFatal(err)
+		utf8 := `ALTER TABLE blog CONVERT TO CHARACTER SET utf8 COLLATE utf8_unicode_ci;`
+		_, err = db.Exec(utf8)
+		LogFatal(err)
 	}
 }
 

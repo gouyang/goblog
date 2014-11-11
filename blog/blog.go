@@ -7,6 +7,7 @@ import (
 	"path"
 	"time"
 
+	//iconv "github.com/djimenez/iconv-go"
 	db "github.com/ouyanggh/goblog/core/mysql"
 	"github.com/ouyanggh/goblog/models"
 	"github.com/russross/blackfriday"
@@ -19,6 +20,9 @@ func Str2html(raw []byte) template.HTML {
 }
 
 func Markdown2HtmlTemplate(raw []byte) template.HTML {
+	//out := make([]byte, len(raw))
+	//out = out[:]
+	//iconv.Convert(raw, out, "gb2312", "utf-8")
 	return template.HTML(string(blackfriday.MarkdownCommon(raw)))
 }
 
