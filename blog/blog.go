@@ -49,7 +49,8 @@ func renderTemplate(w http.ResponseWriter, p *models.Post, tmpl string) {
 func HomePage(w http.ResponseWriter, r *http.Request) {
 	btmpl := "layout.html"
 	tmpl := path.Join("templates", "layout.html")
-	t, err := template.New(btmpl).Funcs(funcMap).ParseFiles(tmpl)
+	base := path.Join("templates", "base.html")
+	t, err := template.New(btmpl).Funcs(funcMap).ParseFiles(base, tmpl)
 	CheckErr(err)
 	err = t.Execute(w, "")
 	CheckErr(err)
