@@ -123,7 +123,7 @@ func QueryAll() (titles map[string][]byte) {
 func QueryAllPost() (p []models.Post) {
 	db, err := sql.Open("sqlite3", "./sqlite3.db")
 	LogFatal(err)
-	rows, err := db.Query("SELECT title, created, body FROM blog")
+	rows, err := db.Query("SELECT title, created, body FROM blog ORDER BY id DESC")
 	LogFatal(err)
 	defer rows.Close()
 	for rows.Next() {
