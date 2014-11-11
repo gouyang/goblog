@@ -25,6 +25,7 @@ func main() {
 	r.HandleFunc("/admin", authenticator.Wrap(auth.LoginAdmin))
 	r.HandleFunc("/cleanup", blog.CleanUp)
 	r.HandleFunc("/blogs", blog.ListPosts)
+	r.HandleFunc("/gallerys", blog.Gallerys)
 	r.HandleFunc("/blog/{title}", blog.ViewPost)
 	r.HandleFunc("/blog/new/", blog.NewPost)
 	r.HandleFunc("/blog/save/", blog.SavePost)

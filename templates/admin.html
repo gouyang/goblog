@@ -1,19 +1,49 @@
-<!DOCTYPE HTML>
-<html>
+<!DOCTYPE html>
+<html lang="zh-cn">
   <head>
-    <link rel="stylesheet" href="/static/css/main.css">
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Goblog</title>
+
+    <!-- Bootstrap -->
+    <link href="http://cdn.bootcss.com/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet">
   </head>
   <body>
-  <h1><a href="/">Home</a>
-    <a href="/blogs">Blogs</a></h1>
-    <ul>
-      <li><a href="/blog/new/">Add Post</a></li>
-      <li><a href="/blogs/manage/">Manage Posts</a></li>
-    </ul>
-    <ul>
-      <li><a href="/cleanup">Cleanup</li>
-        Warning! All data will be lost.</br>
-        it should only be used in early develop process for debugging purpose!
-    </ul>
+    </br></br>
+    <div class="container">
+      <div class="col-xs-1">
+        <a href="/">Home</a>
+      </div>
+      <div class="col-xs-1">
+        <a href="/blogs">Blogs</a>
+      </div>
+      <div class="col-xs-1">
+        <a href="/gallerys">Gallerys</a>
+      </div>
+      <div class="col-xs-2">
+      </div>
+      <div class="col-xs-1">
+        <a href="/admin">Admin</a>
+      </div>
+      <div class="col-xs-6">
+      </div>
+      </br></br>
+      </br></br>
+      <ul>
+        <li><a href="/blog/new/">Add Post</a></li>
+        <li><a href="/blogs/manage/">Manage Posts</a></li>
+      </ul>
+      <ul>
+        <li><a href="/cleanup">Cleanup</li>
+          Warning! All data will be lost.</br>
+          it should only be used in early developing process for debugging purpose!
+      </ul>
+    </div>
+
+  <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+  <script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
+  <!-- Include all compiled plugins (below), or include individual files as needed -->
+  <script src="http://cdn.bootcss.com/bootstrap/3.3.0/js/bootstrap.min.js"></script>
   </body>
 </html>

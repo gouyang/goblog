@@ -141,3 +141,12 @@ func CleanUp(w http.ResponseWriter, r *http.Request) {
 	db.Cleanup()
 	http.Redirect(w, r, "/blogs/manage/", http.StatusFound)
 }
+
+func Gallerys(w http.ResponseWriter, r *http.Request) {
+	btmpl := "gallerys.html"
+	tmpl := path.Join("templates", "gallerys.html")
+	t, err := template.New(btmpl).Funcs(funcMap).ParseFiles(tmpl)
+	CheckErr(err)
+	err = t.Execute(w, "")
+	CheckErr(err)
+}
