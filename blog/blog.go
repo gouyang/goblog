@@ -8,7 +8,7 @@ import (
 	"time"
 
 	//iconv "github.com/djimenez/iconv-go"
-	db "github.com/ouyanggh/goblog/core/mysql"
+	db "github.com/ouyanggh/goblog/core/sqlite"
 	"github.com/ouyanggh/goblog/models"
 	"github.com/russross/blackfriday"
 )
@@ -40,9 +40,10 @@ func CheckErr(err error) {
 func renderTemplate(w http.ResponseWriter, p *models.Post, tmpl string) {
 	btmpl := tmpl + ".html"
 	rtmpl := path.Join("templates", tmpl+".html")
-	t, err := template.New(btmpl).Funcs(funcMap).ParseFiles(rtmpl)
+	base := path.Join("templates", "base.html")
+	t, err := template.New(btmpl).Funcs(funcMap).ParseFiles(base, rtmpl)
 	CheckErr(err)
-	err = t.Execute(w, p)
+	err = t.ExecuteTemplate(w, "base", p)
 	CheckErr(err)
 }
 
@@ -52,16 +53,18 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 	base := path.Join("templates", "base.html")
 	t, err := template.New(btmpl).Funcs(funcMap).ParseFiles(base, tmpl)
 	CheckErr(err)
-	err = t.Execute(w, "")
+	err = t.ExecuteTemplate(w, "base", "")
 	CheckErr(err)
 }
 
 func NewPost(w http.ResponseWriter, r *http.Request) {
 	btmpl := "new.html"
 	tmpl := path.Join("templates", "new.html")
-	t, err := template.New(btmpl).Funcs(funcMap).ParseFiles(tmpl)
+	base := path.Join("templates", "base.html")
+	t, err := template.New(btmpl).Funcs(funcMap).ParseFiles(base, tmpl)
 	CheckErr(err)
-	err = t.Execute(w, "")
+	//err = t.Execute(w, "")
+	err = t.ExecuteTemplate(w, "base", "")
 	CheckErr(err)
 }
 
@@ -107,9 +110,11 @@ func ListPosts(w http.ResponseWriter, r *http.Request) {
 	p.Posts = db.QueryAllPost()
 	btmpl := "lists.html"
 	tmpl := path.Join("templates", "lists.html")
-	t, err := template.New(btmpl).Funcs(funcMap).ParseFiles(tmpl)
+	base := path.Join("templates", "base.html")
+	t, err := template.New(btmpl).Funcs(funcMap).ParseFiles(base, tmpl)
 	CheckErr(err)
-	err = t.Execute(w, p)
+	//err = t.Execute(w, p)
+	err = t.ExecuteTemplate(w, "base", p)
 	CheckErr(err)
 }
 
@@ -118,9 +123,10 @@ func ManagePosts(w http.ResponseWriter, r *http.Request) {
 	p.Posts = db.QueryAllPost()
 	btmpl := "exists.html"
 	tmpl := path.Join("templates", "exists.html")
-	t, err := template.New(btmpl).Funcs(funcMap).ParseFiles(tmpl)
+	base := path.Join("templates", "base.html")
+	t, err := template.New(btmpl).Funcs(funcMap).ParseFiles(base, tmpl)
 	CheckErr(err)
-	err = t.Execute(w, p)
+	err = t.ExecuteTemplate(w, "base", p)
 	CheckErr(err)
 }
 
@@ -146,8 +152,9 @@ func CleanUp(w http.ResponseWriter, r *http.Request) {
 func Gallerys(w http.ResponseWriter, r *http.Request) {
 	btmpl := "gallerys.html"
 	tmpl := path.Join("templates", "gallerys.html")
-	t, err := template.New(btmpl).Funcs(funcMap).ParseFiles(tmpl)
+	base := path.Join("templates", "base.html")
+	t, err := template.New(btmpl).Funcs(funcMap).ParseFiles(base, tmpl)
 	CheckErr(err)
-	err = t.Execute(w, "")
+	err = t.ExecuteTemplate(w, "base", "")
 	CheckErr(err)
 }
