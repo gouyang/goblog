@@ -8,6 +8,7 @@ import (
 	"time"
 
 	//iconv "github.com/djimenez/iconv-go"
+	httpauth "github.com/abbot/go-http-auth"
 	db "github.com/ouyanggh/goblog/core/sqlite"
 	"github.com/ouyanggh/goblog/models"
 	"github.com/russross/blackfriday"
@@ -152,6 +153,23 @@ func CleanUp(w http.ResponseWriter, r *http.Request) {
 func Gallerys(w http.ResponseWriter, r *http.Request) {
 	btmpl := "gallerys.html"
 	tmpl := path.Join("templates", "gallerys.html")
+	base := path.Join("templates", "base.html")
+	t, err := template.New(btmpl).Funcs(funcMap).ParseFiles(base, tmpl)
+	CheckErr(err)
+	err = t.ExecuteTemplate(w, "base", "")
+	CheckErr(err)
+}
+
+func Secret(user, realm string) string {
+	if user == "admin" {
+		return "$1$HRJLR.AX$cqPG8rm2J51.WKfgL15/H1"
+	}
+	return ""
+}
+
+func LoginAdmin(w http.ResponseWriter, r *httpauth.AuthenticatedRequest) {
+	btmpl := "admin.html"
+	tmpl := path.Join("templates", "admin.html")
 	base := path.Join("templates", "base.html")
 	t, err := template.New(btmpl).Funcs(funcMap).ParseFiles(base, tmpl)
 	CheckErr(err)

@@ -7,10 +7,10 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/ouyanggh/goblog/auth"
 	"github.com/ouyanggh/goblog/blog"
-	db "github.com/ouyanggh/goblog/core/mysql"
+	db "github.com/ouyanggh/goblog/core/sqlite"
 )
 
-const SQLITEDBFILE = "mysql3.db"
+const SQLITEDBFILE = "sqlite3.db"
 
 func main() {
 	// create database file
@@ -22,7 +22,7 @@ func main() {
 
 	r := mux.NewRouter()
 	r.HandleFunc("/", blog.HomePage)
-	r.HandleFunc("/admin", authenticator.Wrap(auth.LoginAdmin))
+	r.HandleFunc("/admin", authenticator.Wrap(blog.LoginAdmin))
 	r.HandleFunc("/cleanup", blog.CleanUp)
 	r.HandleFunc("/blogs", blog.ListPosts)
 	r.HandleFunc("/gallerys", blog.Gallerys)
