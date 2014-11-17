@@ -3,3 +3,9 @@
     font-size: 24px;
     font-weight: bold;
 }
+
+.warning {
+    color: red;
+    font-weight: bold;
+    font-size: 16px;
+}
