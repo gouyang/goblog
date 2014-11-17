@@ -6,6 +6,7 @@ import (
 	httpauth "github.com/abbot/go-http-auth"
 	"github.com/gorilla/mux"
 	"github.com/ouyanggh/goblog/blog"
+	"github.com/ouyanggh/goblog/core"
 	db "github.com/ouyanggh/goblog/core/sqlite"
 )
 
@@ -15,7 +16,7 @@ func main() {
 	// create database file
 	db.InitDB()
 
-	authenticator := httpauth.NewBasicAuthenticator("localhost", blog.Secret)
+	authenticator := httpauth.NewBasicAuthenticator("localhost", core.Secret)
 
 	fs := http.FileServer(http.Dir("static"))
 

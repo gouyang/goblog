@@ -2,71 +2,28 @@ package blog
 
 import (
 	"html/template"
-	"log"
 	"net/http"
 	"path"
 	"time"
 
-	//iconv "github.com/djimenez/iconv-go"
 	httpauth "github.com/abbot/go-http-auth"
+	. "github.com/ouyanggh/goblog/core"
 	db "github.com/ouyanggh/goblog/core/sqlite"
 	"github.com/ouyanggh/goblog/models"
-	"github.com/russross/blackfriday"
 )
 
 var oldtitle string
 
-func Str2html(raw []byte) template.HTML {
-	return template.HTML(string(raw))
-}
-
-func Markdown2HtmlTemplate(raw []byte) template.HTML {
-	//out := make([]byte, len(raw))
-	//out = out[:]
-	//iconv.Convert(raw, out, "gb2312", "utf-8")
-	return template.HTML(string(blackfriday.MarkdownCommon(raw)))
-}
-
-var funcMap = template.FuncMap{
-	"str2html":              Str2html,
-	"markdown2htmltemplate": Markdown2HtmlTemplate,
-}
-
-func CheckErr(err error) {
-	if err != nil {
-		log.Fatal(err)
-	}
-}
-
-func renderTemplate(w http.ResponseWriter, p *models.Post, tmpl string) {
-	btmpl := tmpl + ".html"
-	rtmpl := path.Join("templates", tmpl+".html")
-	base := path.Join("templates", "base.html")
-	t, err := template.New(btmpl).Funcs(funcMap).ParseFiles(base, rtmpl)
-	CheckErr(err)
-	err = t.ExecuteTemplate(w, "base", p)
-	CheckErr(err)
-}
-
 func HomePage(w http.ResponseWriter, r *http.Request) {
-	btmpl := "layout.html"
-	tmpl := path.Join("templates", "layout.html")
-	base := path.Join("templates", "base.html")
-	t, err := template.New(btmpl).Funcs(funcMap).ParseFiles(base, tmpl)
-	CheckErr(err)
-	err = t.ExecuteTemplate(w, "base", "")
-	CheckErr(err)
+	tmpl := "layout"
+	p := &models.Post{}
+	RenderTemplate(w, p, tmpl)
 }
 
 func NewPost(w http.ResponseWriter, r *http.Request) {
-	btmpl := "new.html"
-	tmpl := path.Join("templates", "new.html")
-	base := path.Join("templates", "base.html")
-	t, err := template.New(btmpl).Funcs(funcMap).ParseFiles(base, tmpl)
-	CheckErr(err)
-	//err = t.Execute(w, "")
-	err = t.ExecuteTemplate(w, "base", "")
-	CheckErr(err)
+	tmpl := "new"
+	p := &models.Post{}
+	RenderTemplate(w, p, tmpl)
 }
 
 func SavePost(w http.ResponseWriter, r *http.Request) {
@@ -89,7 +46,8 @@ func UpdatePost(w http.ResponseWriter, r *http.Request) {
 	oldtitle = title
 
 	p := db.Query(title)
-	renderTemplate(w, p, "edit")
+	tmpl := "edit"
+	RenderTemplate(w, p, tmpl)
 }
 
 func SaveUpdate(w http.ResponseWriter, r *http.Request) {
@@ -109,12 +67,12 @@ func SaveUpdate(w http.ResponseWriter, r *http.Request) {
 func ListPosts(w http.ResponseWriter, r *http.Request) {
 	var p models.Blogs
 	p.Posts = db.QueryAllPost()
-	btmpl := "lists.html"
-	tmpl := path.Join("templates", "lists.html")
+
+	tmpl := "lists"
+	rendertmpl := path.Join("templates", tmpl+".html")
 	base := path.Join("templates", "base.html")
-	t, err := template.New(btmpl).Funcs(funcMap).ParseFiles(base, tmpl)
+	t, err := template.New(tmpl).Funcs(FuncMap).ParseFiles(base, rendertmpl)
 	CheckErr(err)
-	//err = t.Execute(w, p)
 	err = t.ExecuteTemplate(w, "base", p)
 	CheckErr(err)
 }
@@ -122,10 +80,11 @@ func ListPosts(w http.ResponseWriter, r *http.Request) {
 func ManagePosts(w http.ResponseWriter, r *http.Request) {
 	var p models.Blogs
 	p.Posts = db.QueryAllPost()
-	btmpl := "exists.html"
-	tmpl := path.Join("templates", "exists.html")
+
+	tmpl := "exists"
+	rendertmpl := path.Join("templates", tmpl+".html")
 	base := path.Join("templates", "base.html")
-	t, err := template.New(btmpl).Funcs(funcMap).ParseFiles(base, tmpl)
+	t, err := template.New(tmpl).Funcs(FuncMap).ParseFiles(base, rendertmpl)
 	CheckErr(err)
 	err = t.ExecuteTemplate(w, "base", p)
 	CheckErr(err)
@@ -134,7 +93,9 @@ func ManagePosts(w http.ResponseWriter, r *http.Request) {
 func ViewPost(w http.ResponseWriter, r *http.Request) {
 	title := r.URL.Path[len("/blog/"):]
 	p := db.Query(title)
-	renderTemplate(w, p, "view")
+
+	tmpl := "view"
+	RenderTemplate(w, p, tmpl)
 }
 
 func DeletePost(w http.ResponseWriter, r *http.Request) {
@@ -151,28 +112,13 @@ func CleanUp(w http.ResponseWriter, r *http.Request) {
 }
 
 func Gallerys(w http.ResponseWriter, r *http.Request) {
-	btmpl := "gallerys.html"
-	tmpl := path.Join("templates", "gallerys.html")
-	base := path.Join("templates", "base.html")
-	t, err := template.New(btmpl).Funcs(funcMap).ParseFiles(base, tmpl)
-	CheckErr(err)
-	err = t.ExecuteTemplate(w, "base", "")
-	CheckErr(err)
-}
-
-func Secret(user, realm string) string {
-	if user == "admin" {
-		return "$1$HRJLR.AX$cqPG8rm2J51.WKfgL15/H1"
-	}
-	return ""
+	tmpl := "gallerys"
+	p := &models.Post{}
+	RenderTemplate(w, p, tmpl)
 }
 
 func LoginAdmin(w http.ResponseWriter, r *httpauth.AuthenticatedRequest) {
-	btmpl := "admin.html"
-	tmpl := path.Join("templates", "admin.html")
-	base := path.Join("templates", "base.html")
-	t, err := template.New(btmpl).Funcs(funcMap).ParseFiles(base, tmpl)
-	CheckErr(err)
-	err = t.ExecuteTemplate(w, "base", "")
-	CheckErr(err)
+	tmpl := "admin"
+	p := &models.Post{}
+	RenderTemplate(w, p, tmpl)
 }
