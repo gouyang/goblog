@@ -2,6 +2,7 @@
 {{define "content"}}
   <h1>{{.Title}}</h1>
     </br>
-    <em>Created on {{.Created}}</em>
-    <div>{{.Body | markdown2htmltemplate}}</div>
+    <div><em>Created on {{.Created}}</em></div>
+    </br>
+    <div class="content">{{.Body | markdown2htmltemplate}}</div>
 {{end}}

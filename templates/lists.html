@@ -1,12 +1,13 @@
 {{template "base"}}
 {{define "content"}}
-      <h2>Blog lists ...</h2>
+      <h1>Blog lists ...</h1>
       {{with .Posts}}
         {{range .}}
-          <div><strong><em><a href="/blog/{{.Title}}">{{.Title}}</a></em></strong></div>
-          Created on {{.Created}}</br></br>
+          <div><h2><a href="/blog/{{.Title}}">{{.Title}}</a></h1></div>
+          <div><em>Created on {{.Created}}</em></div>
+          </br>
           <div class="content">{{.Body | markdown2htmltemplate}}</div>
-          <div></br></br></div>
+          </br></br>
         {{end}}
       {{end}}
 {{end}}
