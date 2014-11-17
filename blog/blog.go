@@ -20,7 +20,7 @@ func HomePage(w http.ResponseWriter, r *http.Request) {
 	RenderTemplate(w, p, tmpl)
 }
 
-func NewPost(w http.ResponseWriter, r *http.Request) {
+func NewPostPage(w http.ResponseWriter, r *http.Request) {
 	tmpl := "new"
 	p := &models.Post{}
 	RenderTemplate(w, p, tmpl)
@@ -39,7 +39,7 @@ func SavePost(w http.ResponseWriter, r *http.Request) {
 	http.Redirect(w, r, "/blog/"+title, http.StatusFound)
 }
 
-func UpdatePost(w http.ResponseWriter, r *http.Request) {
+func UpdatePostPage(w http.ResponseWriter, r *http.Request) {
 	title := r.URL.Path[len("/blog/update/"):]
 
 	// save global oldtitle for late use
@@ -117,7 +117,7 @@ func Gallerys(w http.ResponseWriter, r *http.Request) {
 	RenderTemplate(w, p, tmpl)
 }
 
-func LoginAdmin(w http.ResponseWriter, r *httpauth.AuthenticatedRequest) {
+func AdminPage(w http.ResponseWriter, r *httpauth.AuthenticatedRequest) {
 	tmpl := "admin"
 	p := &models.Post{}
 	RenderTemplate(w, p, tmpl)

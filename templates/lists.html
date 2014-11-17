@@ -1,9 +1,8 @@
 {{template "base"}}
 {{define "content"}}
-      <h1>Blog lists ...</h1>
       {{with .Posts}}
         {{range .}}
-          <div><h2><a href="/blog/{{.Title}}">{{.Title}}</a></h1></div>
+          <div><a href="/blog/{{.Title}}">{{.Title}}</a></div>
           <div><em>Created on {{.Created}}</em></div>
           </br>
           <div class="content">{{.Body | markdown2htmltemplate}}</div>

@@ -1,8 +1,7 @@
 {{template "base"}}
 {{define "content"}}
-  <h1>{{.Title}}</h1>
-    </br>
-    <div><em>Created on {{.Created}}</em></div>
-    </br>
-    <div class="content">{{.Body | markdown2htmltemplate}}</div>
+  <div class="title">{{.Title}}</div>
+  <div><em>Created on {{.Created}}</em></div>
+  </br>
+  <div class="content">{{.Body | markdown2htmltemplate}}</div>
 {{end}}
