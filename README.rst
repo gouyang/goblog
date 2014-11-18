@@ -75,3 +75,4 @@ TODO
 
 - refactor the blog.go to use interface.
 - enhance the front pages.
+- http://shadynasty.biz/blog/2012/09/05/auth-and-sessions/
