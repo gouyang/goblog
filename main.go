@@ -10,10 +10,8 @@ import (
 	db "github.com/ouyanggh/goblog/core/sqlite"
 )
 
-const SQLITEDBFILE = "sqlite3.db"
-
 func main() {
-	// create database file
+	// Intialize database file or table.
 	db.InitDB()
 
 	authenticator := httpauth.NewBasicAuthenticator("localhost", core.Secret)

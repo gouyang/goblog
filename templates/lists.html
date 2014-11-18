@@ -3,7 +3,7 @@
       {{with .Posts}}
         {{range .}}
           <div><a href="/blog/{{.Title}}">{{.Title}}</a></div>
-          <div><em>Created on {{.Created}}</em></div>
+          <div><em>Created on {{.Created | time2string}}</em></div>
           </br>
           <div class="content">{{.Body | markdown2htmltemplate}}</div>
           </br></br>

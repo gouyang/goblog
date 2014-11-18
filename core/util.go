@@ -5,31 +5,36 @@ import (
 	"log"
 	"net/http"
 	"path"
+	"time"
 
 	"github.com/ouyanggh/goblog/models"
 	"github.com/russross/blackfriday"
 )
 
-func Str2html(raw []byte) template.HTML {
-	return template.HTML(string(raw))
-}
+const FORMAT = "2006-01-02 15:04:05"
 
-func Markdown2HtmlTemplate(raw []byte) template.HTML {
-	//out := make([]byte, len(raw))
-	//out = out[:]
-	//iconv.Convert(raw, out, "gb2312", "utf-8")
-	return template.HTML(string(blackfriday.MarkdownCommon(raw)))
-}
-
-var FuncMap = template.FuncMap{
-	"str2html":              Str2html,
-	"markdown2htmltemplate": Markdown2HtmlTemplate,
+func Time2String(t time.Time) string {
+	return t.Format(FORMAT)
 }
 
 func CheckErr(err error) {
 	if err != nil {
 		log.Fatalln(err)
 	}
+}
+
+func Str2html(raw []byte) template.HTML {
+	return template.HTML(string(raw))
+}
+
+func Markdown2HtmlTemplate(raw []byte) template.HTML {
+	return template.HTML(string(blackfriday.MarkdownCommon(raw)))
+}
+
+var FuncMap = template.FuncMap{
+	"time2string":           Time2String,
+	"str2html":              Str2html,
+	"markdown2htmltemplate": Markdown2HtmlTemplate,
 }
 
 func RenderTemplate(w http.ResponseWriter, p *models.Post, tmpl string) {
