@@ -15,6 +15,8 @@ func LogFatal(err error) {
 	}
 }
 
+var db *sql.DB
+
 func InitDB() {
 	db, err := sql.Open("mysql", "admin:password@/test?parseTime=true")
 	LogFatal(err)
@@ -34,8 +36,6 @@ func InitDB() {
 
 func Insert(p *models.Post) {
 	now := time.Now().Unix()
-	db, err := sql.Open("mysql", "admin:password@/test?parseTime=true")
-	LogFatal(err)
 
 	tx, err := db.Begin()
 	LogFatal(err)
@@ -60,9 +60,6 @@ func Insert(p *models.Post) {
 }
 
 func Delete(title string) {
-	db, err := sql.Open("mysql", "admin:password@/test?parseTime=true")
-	LogFatal(err)
-
 	tx, err := db.Begin()
 	LogFatal(err)
 
@@ -76,9 +73,6 @@ func Delete(title string) {
 }
 
 func Update(np *models.Post, title string) {
-	db, err := sql.Open("mysql", "admin:password@/test?parseTime=true")
-	LogFatal(err)
-
 	tx, err := db.Begin()
 	LogFatal(err)
 
@@ -92,9 +86,6 @@ func Update(np *models.Post, title string) {
 }
 
 func Query(title string) (p *models.Post) {
-	db, err := sql.Open("mysql", "admin:password@/test?parseTime=true")
-	LogFatal(err)
-
 	stmt, err := db.Prepare("SELECT title, created, body FROM blog WHERE title = ?")
 	LogFatal(err)
 	defer stmt.Close()
@@ -111,8 +102,6 @@ func Query(title string) (p *models.Post) {
 }
 
 func QueryAll() (titles map[string][]byte) {
-	db, err := sql.Open("mysql", "admin:password@/test?parseTime=true")
-	LogFatal(err)
 	rows, err := db.Query("SELECT title, body FROM blog")
 	LogFatal(err)
 	defer rows.Close()
@@ -129,8 +118,6 @@ func QueryAll() (titles map[string][]byte) {
 }
 
 func QueryAllPost() (p []models.Post) {
-	db, err := sql.Open("mysql", "admin:password@/test?parseTime=true")
-	LogFatal(err)
 	rows, err := db.Query("SELECT title, created, body FROM blog ORDER BY id DESC")
 	LogFatal(err)
 	defer rows.Close()
@@ -146,9 +133,8 @@ func QueryAllPost() (p []models.Post) {
 }
 
 func Cleanup() {
-	db, err := sql.Open("mysql", "admin:password@/test?parseTime=true")
-	LogFatal(err)
 	defer db.Close()
 	exist := `delete from blog`
-	_, err = db.Exec(exist)
+	_, err := db.Exec(exist)
+	log.Fatalln(err)
 }
