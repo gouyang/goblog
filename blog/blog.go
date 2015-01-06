@@ -6,7 +6,7 @@ import (
 	"path"
 	"time"
 
-	httpauth "github.com/abbot/go-http-auth"
+	//httpauth "github.com/abbot/go-http-auth"
 	. "github.com/ouyanggh/goblog/core"
 	db "github.com/ouyanggh/goblog/core/sqlite"
 	"github.com/ouyanggh/goblog/models"
@@ -117,7 +117,7 @@ func Gallerys(w http.ResponseWriter, r *http.Request) {
 	RenderTemplate(w, p, tmpl)
 }
 
-func AdminPage(w http.ResponseWriter, r *httpauth.AuthenticatedRequest) {
+func AdminPage(w http.ResponseWriter, r *http.Request) {
 	tmpl := "admin"
 	p := &models.Post{}
 	RenderTemplate(w, p, tmpl)
