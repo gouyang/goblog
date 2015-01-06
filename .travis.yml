@@ -7,5 +7,7 @@ install:
   - go get github.com/go-sql-driver/mysql
   - go get github.com/mattn/go-sqlite3
   - go get github.com/gorilla/mux
+  - go get github.com/nabeken/negroni-auth
+  - go get github.com/codegangsta/negroni
 script:
   - go build .

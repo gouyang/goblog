@@ -37,7 +37,7 @@ func main() {
 	n := negroni.New()
 	n.Use(auth.Basic("admin", "123qweP"))
 	n.UseHandler(r)
-	n.Run(":8008")
+	//n.Run(":8008")
 	//r.Handle("/", n)
-	//http.ListenAndServe(":8080", r)
+	http.ListenAndServe(":8080", n)
 }
