@@ -4,9 +4,10 @@ import (
 	"net/http"
 
 	//httpauth "github.com/abbot/go-http-auth"
-	"github.com/codegangsta/negroni"
+	//"github.com/codegangsta/negroni"
 	"github.com/gorilla/mux"
-	auth "github.com/nabeken/negroni-auth"
+	//auth "github.com/nabeken/negroni-auth"
+	"github.com/goji/httpauth"
 	"github.com/ouyanggh/goblog/blog"
 	//"github.com/ouyanggh/goblog/core"
 	db "github.com/ouyanggh/goblog/core/sqlite"
@@ -34,10 +35,12 @@ func main() {
 	r.HandleFunc("/blogs/manage/", blog.ManagePosts)
 	r.HandleFunc("/blog/delete/{title}", blog.DeletePost)
 	r.Handle("/static/", http.StripPrefix("/static", fs))
-	n := negroni.New()
-	n.Use(auth.Basic("admin", "123qweP"))
-	n.UseHandler(r)
+	//n := negroni.New()
+	//n.Use(auth.Basic("admin", "123qweP"))
+	//n.UseHandler(r)
 	//n.Run(":8008")
 	//r.Handle("/", n)
-	http.ListenAndServe(":8080", n)
+	authHandler := httpauth.SimpleBasicAuth("admin", "hello")
+	http.Handle("/", authHandler(r))
+	http.ListenAndServe(":8080", nil)
 }
