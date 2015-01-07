@@ -1,6 +1,10 @@
 goblog
 ======
 
+.. image:: https://api.travis-ci.org/ouyanggh/goblog.svg?branch=master
+    :target: https://travis-ci.org/ouyanggh/goblog
+
+
 Learn to write a blog framework from scratch in golang
 
 Database
