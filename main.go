@@ -35,11 +35,13 @@ func main() {
 	r.HandleFunc("/blogs/manage/", blog.ManagePosts)
 	r.HandleFunc("/blog/delete/{title}", blog.DeletePost)
 	r.Handle("/static/", http.StripPrefix("/static", fs))
-	//n := negroni.New()
-	//n.Use(auth.Basic("admin", "hello"))
-	//n.UseHandler(r)
-	//n.Run(":8008")
-	//r.Handle("/", n)
+	/*
+		n := negroni.New()
+		n.Use(auth.Basic("admin", "hello"))
+		n.UseHandler(r)
+		n.Run(":8008")
+		r.Handle("/", n)
+	*/
 	authHandler := httpauth.SimpleBasicAuth("admin", "hello")
 	http.Handle("/", authHandler(r))
 	http.ListenAndServe(":8080", nil)
