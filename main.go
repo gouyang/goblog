@@ -36,7 +36,7 @@ func main() {
 	r.HandleFunc("/blog/delete/{title}", blog.DeletePost)
 	r.Handle("/static/", http.StripPrefix("/static", fs))
 	//n := negroni.New()
-	//n.Use(auth.Basic("admin", "123qweP"))
+	//n.Use(auth.Basic("admin", "hello"))
 	//n.UseHandler(r)
 	//n.Run(":8008")
 	//r.Handle("/", n)

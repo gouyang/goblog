@@ -1,9 +1,7 @@
 package blog
 
 import (
-	"html/template"
 	"net/http"
-	"path"
 	"time"
 
 	//httpauth "github.com/abbot/go-http-auth"
@@ -17,13 +15,13 @@ var oldtitle string
 func HomePage(w http.ResponseWriter, r *http.Request) {
 	tmpl := "layout"
 	p := &models.Post{}
-	RenderTemplate(w, p, tmpl)
+	RenderTemplate(w, tmpl, p)
 }
 
 func NewPost(w http.ResponseWriter, r *http.Request) {
 	tmpl := "new"
 	p := &models.Post{}
-	RenderTemplate(w, p, tmpl)
+	RenderTemplate(w, tmpl, p)
 }
 
 func SavePost(w http.ResponseWriter, r *http.Request) {
@@ -47,7 +45,7 @@ func UpdatePost(w http.ResponseWriter, r *http.Request) {
 
 	p := db.Query(title)
 	tmpl := "edit"
-	RenderTemplate(w, p, tmpl)
+	RenderTemplate(w, tmpl, p)
 }
 
 func SaveUpdate(w http.ResponseWriter, r *http.Request) {
@@ -69,12 +67,7 @@ func ListPosts(w http.ResponseWriter, r *http.Request) {
 	p.Posts = db.QueryAllPost()
 
 	tmpl := "lists"
-	rendertmpl := path.Join("templates", tmpl+".html")
-	base := path.Join("templates", "base.html")
-	t, err := template.New(tmpl).Funcs(FuncMap).ParseFiles(base, rendertmpl)
-	CheckErr(err)
-	err = t.ExecuteTemplate(w, "base", p)
-	CheckErr(err)
+	RenderTemplate(w, tmpl, p)
 }
 
 func ManagePosts(w http.ResponseWriter, r *http.Request) {
@@ -82,12 +75,7 @@ func ManagePosts(w http.ResponseWriter, r *http.Request) {
 	p.Posts = db.QueryAllPost()
 
 	tmpl := "exists"
-	rendertmpl := path.Join("templates", tmpl+".html")
-	base := path.Join("templates", "base.html")
-	t, err := template.New(tmpl).Funcs(FuncMap).ParseFiles(base, rendertmpl)
-	CheckErr(err)
-	err = t.ExecuteTemplate(w, "base", p)
-	CheckErr(err)
+	RenderTemplate(w, tmpl, p)
 }
 
 func ViewPost(w http.ResponseWriter, r *http.Request) {
@@ -95,7 +83,7 @@ func ViewPost(w http.ResponseWriter, r *http.Request) {
 	p := db.Query(title)
 
 	tmpl := "view"
-	RenderTemplate(w, p, tmpl)
+	RenderTemplate(w, tmpl, p)
 }
 
 func DeletePost(w http.ResponseWriter, r *http.Request) {
@@ -114,11 +102,11 @@ func CleanUp(w http.ResponseWriter, r *http.Request) {
 func Gallerys(w http.ResponseWriter, r *http.Request) {
 	tmpl := "gallerys"
 	p := &models.Post{}
-	RenderTemplate(w, p, tmpl)
+	RenderTemplate(w, tmpl, p)
 }
 
 func AdminPage(w http.ResponseWriter, r *http.Request) {
 	tmpl := "admin"
 	p := &models.Post{}
-	RenderTemplate(w, p, tmpl)
+	RenderTemplate(w, tmpl, p)
 }

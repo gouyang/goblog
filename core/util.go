@@ -7,7 +7,6 @@ import (
 	"path"
 	"time"
 
-	"github.com/ouyanggh/goblog/models"
 	"github.com/russross/blackfriday"
 )
 
@@ -37,12 +36,17 @@ var FuncMap = template.FuncMap{
 	"markdown2htmltemplate": Markdown2HtmlTemplate,
 }
 
-func RenderTemplate(w http.ResponseWriter, p *models.Post, tmpl string) {
+func compileTemplate(tmpl string) *template.Template {
 	base := path.Join("templates", "base.html")
 	rendertmpl := path.Join("templates", tmpl+".html")
-	t, err := template.New(tmpl).Funcs(FuncMap).ParseFiles(base, rendertmpl)
-	CheckErr(err)
-	err = t.ExecuteTemplate(w, "base", p)
+	t := template.New("")
+	t = template.Must(t.Funcs(FuncMap).ParseGlob(base))
+	return template.Must(t.ParseFiles(rendertmpl))
+}
+
+func RenderTemplate(w http.ResponseWriter, tmpl string, p interface{}) {
+	t := compileTemplate(tmpl)
+	err := t.ExecuteTemplate(w, "base", p)
 	CheckErr(err)
 }
 
