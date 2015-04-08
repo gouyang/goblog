@@ -1,4 +1,4 @@
-image: go1.3
+image: golang
 script:
   - go get github.com/abbot/go-http-auth
   - go get github.com/russross/blackfriday
