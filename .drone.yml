@@ -1,4 +1,6 @@
 image: golang
+git:
+  path: github.com/gouyang/goblog
 script:
   - go get github.com/abbot/go-http-auth
   - go get github.com/russross/blackfriday
