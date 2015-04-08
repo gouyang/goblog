@@ -75,3 +75,4 @@ TODO
 - enhance the front pages.
 - auth and session
 - http://shadynasty.biz/blog/2012/09/05/auth-and-sessions/
+- add drone test
