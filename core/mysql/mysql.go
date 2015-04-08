@@ -6,7 +6,7 @@ import (
 	"time"
 
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/ouyanggh/goblog/models"
+	"github.com/gouyang/goblog/models"
 )
 
 func LogFatal(err error) {

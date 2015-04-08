@@ -3,14 +3,10 @@ package main
 import (
 	"net/http"
 
-	//httpauth "github.com/abbot/go-http-auth"
-	//"github.com/codegangsta/negroni"
-	"github.com/gorilla/mux"
-	//auth "github.com/nabeken/negroni-auth"
 	"github.com/goji/httpauth"
-	"github.com/ouyanggh/goblog/blog"
-	//"github.com/ouyanggh/goblog/core"
-	db "github.com/ouyanggh/goblog/core/sqlite"
+	"github.com/gorilla/mux"
+	"github.com/gouyang/goblog/blog"
+	db "github.com/gouyang/goblog/core/sqlite"
 )
 
 func main() {

@@ -4,10 +4,9 @@ import (
 	"net/http"
 	"time"
 
-	//httpauth "github.com/abbot/go-http-auth"
-	. "github.com/ouyanggh/goblog/core"
-	db "github.com/ouyanggh/goblog/core/sqlite"
-	"github.com/ouyanggh/goblog/models"
+	. "github.com/gouyang/goblog/core"
+	db "github.com/gouyang/goblog/core/sqlite"
+	"github.com/gouyang/goblog/models"
 )
 
 var oldtitle string

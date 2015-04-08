@@ -5,8 +5,8 @@ import (
 	"log"
 	"time"
 
+	"github.com/gouyang/goblog/models"
 	_ "github.com/mattn/go-sqlite3"
-	"github.com/ouyanggh/goblog/models"
 )
 
 func LogFatal(err error) {
