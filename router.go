@@ -6,16 +6,14 @@ import (
 )
 
 func homePage(btx *postContext, w http.ResponseWriter, r *http.Request) error {
-	tmpl := "layout"
-	p := &post{}
-	err := renderTemplate(w, tmpl, p)
+	p := &page{Tmpl: "layout", Post: &post{}, W: w}
+	err := p.renderTemplate()
 	return err
 }
 
 func newPost(btx *postContext, w http.ResponseWriter, r *http.Request) error {
-	tmpl := "new"
-	p := &post{}
-	err := renderTemplate(w, tmpl, p)
+	p := &page{Tmpl: "new", Post: &post{}, W: w}
+	err := p.renderTemplate()
 	return err
 }
 
@@ -28,7 +26,7 @@ func savePost(btx *postContext, w http.ResponseWriter, r *http.Request) error {
 		Created: now,
 		Body:    []byte(rbody),
 	}
-	err := insert(p)
+	err := p.insert()
 	http.Redirect(w, r, "/blog/"+rtitle, http.StatusFound)
 	return err
 }
@@ -37,10 +35,21 @@ func updatePost(btx *postContext, w http.ResponseWriter, r *http.Request) error 
 	title := r.URL.Path[len("/blog/update/"):]
 
 	btx.title = title
+	p := &post{Title: title}
+	p, err := p.query()
 
-	p, err := query(title)
-	tmpl := "edit"
-	err = renderTemplate(w, tmpl, p)
+	pa := &page{Tmpl: "edit", Post: p, W: w}
+	err = pa.renderTemplate()
+	return err
+}
+
+func viewPost(btx *postContext, w http.ResponseWriter, r *http.Request) error {
+	title := r.URL.Path[len("/blog/"):]
+	p := &post{Title: title}
+	p, err := p.query()
+
+	pa := &page{Tmpl: "view", Post: p, W: w}
+	err = pa.renderTemplate()
 	return err
 }
 
@@ -53,41 +62,34 @@ func saveUpdate(btx *postContext, w http.ResponseWriter, r *http.Request) error 
 		Created: now,
 		Body:    []byte(rbody),
 	}
-	err := update(p, btx.title)
+	err := p.update(btx.title)
 	http.Redirect(w, r, "/blog/"+rtitle, http.StatusFound)
 	return err
 }
 
 func listPosts(btx *postContext, w http.ResponseWriter, r *http.Request) error {
 	var p blogs
-	p.Posts = queryAllPost()
+	p.Posts = getAllPosts()
 
-	tmpl := "lists"
-	err = renderTemplate(w, tmpl, p)
+	pa := &page{Tmpl: "lists", Post: p, W: w}
+	err := pa.renderTemplate()
 	return err
 }
 
 func managePosts(btx *postContext, w http.ResponseWriter, r *http.Request) error {
 	var p blogs
-	p.Posts = queryAllPost()
+	p.Posts = getAllPosts()
 
-	tmpl := "exists"
-	err = renderTemplate(w, tmpl, p)
-	return err
-}
-
-func viewPost(btx *postContext, w http.ResponseWriter, r *http.Request) error {
-	title := r.URL.Path[len("/blog/"):]
-	p, err := query(title)
-
-	tmpl := "view"
-	err = renderTemplate(w, tmpl, p)
+	pa := &page{Tmpl: "exists", Post: p, W: w}
+	err := pa.renderTemplate()
 	return err
 }
 
 func deletePost(btx *postContext, w http.ResponseWriter, r *http.Request) error {
 	title := r.URL.Path[len("/blog/delete/"):]
-	err := delete(title)
+	var p post
+	p.Title = title
+	err := p.delete()
 	http.Redirect(w, r, "/blogs/manage/", http.StatusFound)
 	return err
 }
@@ -101,15 +103,13 @@ func cleanUp(btx *postContext, w http.ResponseWriter, r *http.Request) error {
 }
 
 func gallerys(btx *postContext, w http.ResponseWriter, r *http.Request) error {
-	tmpl := "gallerys"
-	p := &post{}
-	err := renderTemplate(w, tmpl, p)
+	p := &page{Tmpl: "gallerys", Post: &post{}, W: w}
+	err = p.renderTemplate()
 	return err
 }
 
 func adminPage(btx *postContext, w http.ResponseWriter, r *http.Request) error {
-	tmpl := "admin"
-	p := &post{}
-	err := renderTemplate(w, tmpl, p)
+	p := &page{Tmpl: "admin", Post: &post{}, W: w}
+	err = p.renderTemplate()
 	return err
 }

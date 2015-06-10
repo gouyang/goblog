@@ -1,6 +1,9 @@
 package main
 
-import "time"
+import (
+	"net/http"
+	"time"
+)
 
 type post struct {
 	Title   string
@@ -10,4 +13,10 @@ type post struct {
 
 type blogs struct {
 	Posts []post
+}
+
+type page struct {
+	Tmpl string
+	Post interface{}
+	W    http.ResponseWriter
 }

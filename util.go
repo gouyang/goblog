@@ -3,7 +3,6 @@ package main
 import (
 	"html/template"
 	"log"
-	"net/http"
 	"path"
 	"time"
 
@@ -44,9 +43,9 @@ func compileTemplate(tmpl string) *template.Template {
 	return template.Must(t.ParseFiles(rendertmpl))
 }
 
-func renderTemplate(w http.ResponseWriter, tmpl string, p interface{}) error {
-	t := compileTemplate(tmpl)
-	err := t.ExecuteTemplate(w, "base", p)
+func (p *page) renderTemplate() error {
+	t := compileTemplate(p.Tmpl)
+	err := t.ExecuteTemplate(p.W, "base", p.Post)
 	if err != nil {
 		return err
 	}

@@ -6,7 +6,7 @@ import (
 	_ "github.com/mattn/go-sqlite3"
 )
 
-func insert(p *post) error {
+func (p *post) insert() error {
 	now := time.Now().Unix()
 
 	tx, err := db.Begin()
@@ -40,7 +40,7 @@ func insert(p *post) error {
 	return nil
 }
 
-func delete(title string) error {
+func (p *post) delete() error {
 	tx, err := db.Begin()
 	if err != nil {
 		return err
@@ -52,7 +52,7 @@ func delete(title string) error {
 	}
 	defer stmt.Close()
 
-	_, err = stmt.Exec(title)
+	_, err = stmt.Exec(p.Title)
 	if err != nil {
 		return err
 	}
@@ -61,7 +61,7 @@ func delete(title string) error {
 	return nil
 }
 
-func update(p *post, title string) error {
+func (p *post) update(title string) error {
 	tx, err := db.Begin()
 	if err != nil {
 		return err
@@ -82,24 +82,24 @@ func update(p *post, title string) error {
 	return nil
 }
 
-func query(title string) (p *post, err error) {
+func (p *post) query() (np *post, err error) {
 	stmt, err := db.Prepare("SELECT title, created, body FROM blog WHERE title = ?")
 	if err != nil {
 		return nil, err
 	}
 	defer stmt.Close()
 
-	p = new(post)
-	err = stmt.QueryRow(title).Scan(&p.Title, &p.Created, &p.Body)
+	np = new(post)
+	err = stmt.QueryRow(p.Title).Scan(&np.Title, &np.Created, &np.Body)
 	if err != nil {
 		return nil, err
 	}
-	p.Created = p.Created.Local()
+	np.Created = np.Created.Local()
 
-	return p, nil
+	return np, nil
 }
 
-func queryAll() (titles map[string][]byte, err error) {
+func getAllTitles() (titles map[string][]byte, err error) {
 	rows, err := db.Query("SELECT title, body FROM blog")
 	if err != nil {
 		return nil, err
@@ -116,7 +116,7 @@ func queryAll() (titles map[string][]byte, err error) {
 	return titles, nil
 }
 
-func queryAllPost() (p []post) {
+func getAllPosts() (p []post) {
 	rows, err := db.Query("SELECT title, created, body FROM blog ORDER BY id DESC")
 	if err != nil {
 		return nil
