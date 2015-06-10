@@ -2,7 +2,7 @@
 {{define "content"}}
       {{with .Posts}}
         {{range .}}
-          <div><a href="/blog/{{.Title}}">{{.Title}}</a></div>
+        <div><strong><a href="/blog/{{.Title}}">{{.Title}}</a></strong></div>
           <div><em>Created on {{.Created | time2string}}</em></div>
           </br>
           <div class="content">{{.Body | markdown2htmltemplate}}</div>

@@ -68,7 +68,7 @@ func saveUpdate(btx *postContext, w http.ResponseWriter, r *http.Request) error 
 }
 
 func listPosts(btx *postContext, w http.ResponseWriter, r *http.Request) error {
-	var p blogs
+	var p posts
 	p.Posts = getAllPosts()
 
 	pa := &page{Tmpl: "lists", Post: p, W: w}
@@ -77,7 +77,7 @@ func listPosts(btx *postContext, w http.ResponseWriter, r *http.Request) error {
 }
 
 func managePosts(btx *postContext, w http.ResponseWriter, r *http.Request) error {
-	var p blogs
+	var p posts
 	p.Posts = getAllPosts()
 
 	pa := &page{Tmpl: "exists", Post: p, W: w}

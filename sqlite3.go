@@ -1,10 +1,33 @@
 package main
 
 import (
+	"database/sql"
+	"errors"
+	"log"
 	"time"
 
 	_ "github.com/mattn/go-sqlite3"
 )
+
+var db *sql.DB
+
+var err = errors.New("Open database fail")
+
+func init() {
+	db, err = sql.Open("sqlite3", "./sqlite3.db")
+	if err != nil {
+		log.Fatalln(err)
+	}
+	exist := `select * from blog`
+	_, err = db.Exec(exist)
+	if err != nil {
+		sqlStmt := `CREATE TABLE blog (id INTEGER NOT NULL PRIMARY KEY, title TEXT NOT NULL, created TIMESTAMP, body BLOB);`
+		_, err = db.Exec(sqlStmt)
+		if err != nil {
+			log.Fatalln(err)
+		}
+	}
+}
 
 func (p *post) insert() error {
 	now := time.Now().Unix()

@@ -4,12 +4,15 @@ import (
 	"html/template"
 	"log"
 	"path"
+	"strings"
 	"time"
 
 	"github.com/russross/blackfriday"
 )
 
 const timeFormat = "2006-01-02 15:04:05"
+
+var stripHTMLReplacer = strings.NewReplacer("\n", "<br />")
 
 func time2String(t time.Time) string {
 	return t.Format(timeFormat)
@@ -26,7 +29,9 @@ func str2html(raw []byte) template.HTML {
 }
 
 func markdown2HtmlTemplate(raw []byte) template.HTML {
-	return template.HTML(string(blackfriday.MarkdownCommon(raw)))
+	str := string(raw)
+	s := stripHTMLReplacer.Replace(str)
+	return template.HTML(blackfriday.MarkdownCommon([]byte(s)))
 }
 
 var funcMap = template.FuncMap{
