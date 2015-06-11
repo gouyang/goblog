@@ -1,42 +1,19 @@
 package main
 
 import (
-	"database/sql"
-	"errors"
-	"log"
 	"time"
 
 	_ "github.com/mattn/go-sqlite3"
 )
 
-var db *sql.DB
-
-var err = errors.New("Open database fail")
-
-func init() {
-	db, err = sql.Open("sqlite3", "./sqlite3.db")
-	if err != nil {
-		log.Fatalln(err)
-	}
-	exist := `select * from blog`
-	_, err = db.Exec(exist)
-	if err != nil {
-		sqlStmt := `CREATE TABLE blog (id INTEGER NOT NULL PRIMARY KEY, title TEXT NOT NULL, created TIMESTAMP, body BLOB);`
-		_, err = db.Exec(sqlStmt)
-		if err != nil {
-			log.Fatalln(err)
-		}
-	}
-}
-
-func (p *post) insert() error {
+func (pc *postContext) insert(p *post) error {
 	now := time.Now().Unix()
 
-	tx, err := db.Begin()
+	tx, err := pc.db.Begin()
 	if err != nil {
 		return err
 	}
-	stmtq, err := db.Prepare("SELECT id FROM blog WHERE id = ?")
+	stmtq, err := pc.db.Prepare("SELECT id FROM blog WHERE id = ?")
 	if err != nil {
 		return err
 	}
@@ -63,8 +40,8 @@ func (p *post) insert() error {
 	return nil
 }
 
-func (p *post) delete() error {
-	tx, err := db.Begin()
+func (pc *postContext) delete(p *post) error {
+	tx, err := pc.db.Begin()
 	if err != nil {
 		return err
 	}
@@ -84,8 +61,8 @@ func (p *post) delete() error {
 	return nil
 }
 
-func (p *post) update(title string) error {
-	tx, err := db.Begin()
+func (pc *postContext) update(p *post, title string) error {
+	tx, err := pc.db.Begin()
 	if err != nil {
 		return err
 	}
@@ -105,8 +82,8 @@ func (p *post) update(title string) error {
 	return nil
 }
 
-func (p *post) query() (np *post, err error) {
-	stmt, err := db.Prepare("SELECT title, created, body FROM blog WHERE title = ?")
+func (pc *postContext) query(p *post) (np *post, err error) {
+	stmt, err := pc.db.Prepare("SELECT title, created, body FROM blog WHERE title = ?")
 	if err != nil {
 		return nil, err
 	}
@@ -122,8 +99,8 @@ func (p *post) query() (np *post, err error) {
 	return np, nil
 }
 
-func getAllTitles() (titles map[string][]byte, err error) {
-	rows, err := db.Query("SELECT title, body FROM blog")
+func (pc *postContext) getAllTitles() (titles map[string][]byte, err error) {
+	rows, err := pc.db.Query("SELECT title, body FROM blog")
 	if err != nil {
 		return nil, err
 	}
@@ -139,8 +116,8 @@ func getAllTitles() (titles map[string][]byte, err error) {
 	return titles, nil
 }
 
-func getAllPosts() (p []post) {
-	rows, err := db.Query("SELECT title, created, body FROM blog ORDER BY id DESC")
+func (pc *postContext) getAllPosts() (p []post) {
+	rows, err := pc.db.Query("SELECT title, created, body FROM blog ORDER BY id DESC")
 	if err != nil {
 		return nil
 	}
@@ -159,10 +136,10 @@ func getAllPosts() (p []post) {
 	return
 }
 
-func cleanup() error {
-	defer db.Close()
+func (pc *postContext) cleanup() error {
+	defer pc.db.Close()
 	stmt := `delete from blog`
-	_, err = db.Exec(stmt)
+	_, err := pc.db.Exec(stmt)
 	if err != nil {
 		return err
 	}

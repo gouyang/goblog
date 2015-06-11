@@ -1,14 +1,66 @@
 package main
 
 import (
+	"database/sql"
+	"log"
 	"net/http"
+	"time"
 
 	"github.com/goji/httpauth"
 	"github.com/gorilla/mux"
+	"github.com/juju/errgo"
 )
 
+type post struct {
+	Title   string
+	Body    []byte
+	Created time.Time
+}
+
+type posts struct {
+	Posts []post
+}
+
+type page struct {
+	Tmpl string
+	Post interface{}
+	W    http.ResponseWriter
+}
+
+type postContext struct {
+	title string
+	db    *sql.DB
+}
+
+type blogHandler struct {
+	*postContext
+	h func(*postContext, http.ResponseWriter, *http.Request) error
+}
+
+func (bh blogHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	err := bh.h(bh.postContext, w, r)
+	if err != nil {
+		log.Fatalln(err.(errgo.Locationer).Location())
+	}
+}
+
 func main() {
-	bctx := &postContext{title: ""}
+	sqlite3db, err := sql.Open("sqlite3", "./sqlite3.db")
+	if err != nil {
+		log.Fatalln(err)
+	}
+	// init table for post
+	exist := `select * from blog`
+	_, err = sqlite3db.Exec(exist)
+	if err != nil {
+		sqlStmt := `CREATE TABLE blog (id INTEGER NOT NULL PRIMARY KEY, title TEXT NOT NULL, created TIMESTAMP, body BLOB);`
+		_, err = sqlite3db.Exec(sqlStmt)
+		if err != nil {
+			log.Fatalln(err)
+		}
+	}
+
+	bctx := &postContext{title: "", db: sqlite3db}
 	fs := http.FileServer(http.Dir("static"))
 
 	r := mux.NewRouter()

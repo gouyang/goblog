@@ -26,7 +26,7 @@ func savePost(btx *postContext, w http.ResponseWriter, r *http.Request) error {
 		Created: now,
 		Body:    []byte(rbody),
 	}
-	err := p.insert()
+	err := btx.insert(p)
 	http.Redirect(w, r, "/blog/"+rtitle, http.StatusFound)
 	return err
 }
@@ -36,7 +36,7 @@ func updatePost(btx *postContext, w http.ResponseWriter, r *http.Request) error 
 
 	btx.title = title
 	p := &post{Title: title}
-	p, err := p.query()
+	p, err := btx.query(p)
 
 	pa := &page{Tmpl: "edit", Post: p, W: w}
 	err = pa.renderTemplate()
@@ -46,7 +46,7 @@ func updatePost(btx *postContext, w http.ResponseWriter, r *http.Request) error 
 func viewPost(btx *postContext, w http.ResponseWriter, r *http.Request) error {
 	title := r.URL.Path[len("/blog/"):]
 	p := &post{Title: title}
-	p, err := p.query()
+	p, err := btx.query(p)
 
 	pa := &page{Tmpl: "view", Post: p, W: w}
 	err = pa.renderTemplate()
@@ -62,14 +62,14 @@ func saveUpdate(btx *postContext, w http.ResponseWriter, r *http.Request) error 
 		Created: now,
 		Body:    []byte(rbody),
 	}
-	err := p.update(btx.title)
+	err := btx.update(p, btx.title)
 	http.Redirect(w, r, "/blog/"+rtitle, http.StatusFound)
 	return err
 }
 
 func listPosts(btx *postContext, w http.ResponseWriter, r *http.Request) error {
 	var p posts
-	p.Posts = getAllPosts()
+	p.Posts = btx.getAllPosts()
 
 	pa := &page{Tmpl: "lists", Post: p, W: w}
 	err := pa.renderTemplate()
@@ -78,7 +78,7 @@ func listPosts(btx *postContext, w http.ResponseWriter, r *http.Request) error {
 
 func managePosts(btx *postContext, w http.ResponseWriter, r *http.Request) error {
 	var p posts
-	p.Posts = getAllPosts()
+	p.Posts = btx.getAllPosts()
 
 	pa := &page{Tmpl: "exists", Post: p, W: w}
 	err := pa.renderTemplate()
@@ -87,9 +87,9 @@ func managePosts(btx *postContext, w http.ResponseWriter, r *http.Request) error
 
 func deletePost(btx *postContext, w http.ResponseWriter, r *http.Request) error {
 	title := r.URL.Path[len("/blog/delete/"):]
-	var p post
+	p := &post{}
 	p.Title = title
-	err := p.delete()
+	err := btx.delete(p)
 	http.Redirect(w, r, "/blogs/manage/", http.StatusFound)
 	return err
 }
@@ -97,19 +97,19 @@ func deletePost(btx *postContext, w http.ResponseWriter, r *http.Request) error 
 // cleanup by delete database file and initialize it again
 // all exist data will be lost
 func cleanUp(btx *postContext, w http.ResponseWriter, r *http.Request) error {
-	err := cleanup()
+	err := btx.cleanup()
 	http.Redirect(w, r, "/blogs/manage/", http.StatusFound)
 	return err
 }
 
 func gallerys(btx *postContext, w http.ResponseWriter, r *http.Request) error {
 	p := &page{Tmpl: "gallerys", Post: &post{}, W: w}
-	err = p.renderTemplate()
+	err := p.renderTemplate()
 	return err
 }
 
 func adminPage(btx *postContext, w http.ResponseWriter, r *http.Request) error {
 	p := &page{Tmpl: "admin", Post: &post{}, W: w}
-	err = p.renderTemplate()
+	err := p.renderTemplate()
 	return err
 }
