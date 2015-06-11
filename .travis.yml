@@ -10,5 +10,6 @@ install:
   - go get github.com/nabeken/negroni-auth
   - go get github.com/codegangsta/negroni
   - go get github.com/goji/httpauth
+  - go get github.com/juju/errgo
 script:
   - go build .
