@@ -76,7 +76,8 @@ func main() {
 	r.Handle("/blog/saveupdate/", blogHandler{bctx, saveUpdate})
 	r.Handle("/blogs/manage/", blogHandler{bctx, managePosts})
 	r.Handle("/blog/delete/{title}", blogHandler{bctx, deletePost})
-	r.Handle("/static/", http.StripPrefix("/static", fs))
+	//r.Handle("/static/", http.StripPrefix("/static", fs))
+	r.PathPrefix("/static/").Handler(http.StripPrefix("/static", fs))
 
 	authHandler := httpauth.SimpleBasicAuth("admin", "hello")
 	http.Handle("/", authHandler(r))
