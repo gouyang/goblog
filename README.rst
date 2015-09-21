@@ -9,8 +9,16 @@ goblog
 
 Learn to write a blog framework from scratch in golang
 
+INSTALL
+-------
+
+- go build .
+- ./goblog
+
 TODO
 ----
 
 - use middleware for session
 - add image support
+- add TLS support
+
