@@ -2,13 +2,12 @@ package main
 
 import (
 	"database/sql"
-	"log"
 	"net/http"
 	"time"
 
+	log "github.com/Sirupsen/logrus"
 	"github.com/goji/httpauth"
 	"github.com/gorilla/mux"
-	"github.com/juju/errgo"
 )
 
 type post struct {
@@ -40,15 +39,22 @@ type blogHandler struct {
 func (bh blogHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	err := bh.h(bh.postContext, w, r)
 	if err != nil {
-		log.Fatalln(err.(errgo.Locationer).Location())
+		log.WithFields(log.Fields{
+			"error": err,
+		}).Error("Failed with error")
 	}
 }
 
 func main() {
 	sqlite3db, err := sql.Open("sqlite3", "./sqlite3.db")
 	if err != nil {
-		log.Fatalln(err)
+		log.WithFields(log.Fields{
+			"error": err,
+		}).Warn("Could not open sqlite3 database")
 	}
+	log.WithFields(log.Fields{
+		"database": "./sqlite3.db",
+	}).Info("Run the server with database")
 	// init table for post
 	exist := `select * from blog`
 	_, err = sqlite3db.Exec(exist)
@@ -56,7 +62,9 @@ func main() {
 		sqlStmt := `CREATE TABLE blog (id INTEGER NOT NULL PRIMARY KEY, title TEXT NOT NULL, created TIMESTAMP, body BLOB);`
 		_, err = sqlite3db.Exec(sqlStmt)
 		if err != nil {
-			log.Fatalln(err)
+			log.WithFields(log.Fields{
+				"error": err,
+			}).Warn("Could not create table blog in db")
 		}
 	}
 
@@ -81,5 +89,12 @@ func main() {
 
 	authHandler := httpauth.SimpleBasicAuth("admin", "hello")
 	http.Handle("/", authHandler(r))
+	log.WithFields(log.Fields{
+		"User":   "admin",
+		"passwd": "hello",
+	}).Info("admin info")
+	log.WithFields(log.Fields{
+		"url": "http://127.0.0.1:8001",
+	}).Info("Server run at")
 	http.ListenAndServe(":8001", nil)
 }

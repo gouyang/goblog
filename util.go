@@ -2,7 +2,6 @@ package main
 
 import (
 	"html/template"
-	"log"
 	"path"
 	"strings"
 	"time"
@@ -16,12 +15,6 @@ var stripHTMLReplacer = strings.NewReplacer("\n", "<br />")
 
 func time2String(t time.Time) string {
 	return t.Format(timeFormat)
-}
-
-func checkErr(err error) {
-	if err != nil {
-		log.Fatalln(err)
-	}
 }
 
 func str2html(raw []byte) template.HTML {
