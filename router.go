@@ -2,6 +2,7 @@ package main
 
 import (
 	"net/http"
+	"strings"
 	"time"
 
 	log "github.com/Sirupsen/logrus"
@@ -21,6 +22,7 @@ func newPost(btx *postContext, w http.ResponseWriter, r *http.Request) error {
 
 func savePost(btx *postContext, w http.ResponseWriter, r *http.Request) error {
 	rtitle := r.FormValue("title")
+	rtitle = strings.TrimSuffix(rtitle, "?")
 	rbody := r.FormValue("body")
 	now := time.Now()
 	p := &post{
@@ -38,11 +40,11 @@ func savePost(btx *postContext, w http.ResponseWriter, r *http.Request) error {
 
 func updatePost(btx *postContext, w http.ResponseWriter, r *http.Request) error {
 	title := r.URL.Path[len("/blog/update/"):]
+	title = strings.TrimSuffix(title, "?")
 
 	btx.title = title
 	p := &post{Title: title}
 	p, err := btx.query(p)
-
 	pa := &page{Tmpl: "edit", Post: p, W: w}
 	err = pa.renderTemplate()
 	return err
@@ -50,6 +52,7 @@ func updatePost(btx *postContext, w http.ResponseWriter, r *http.Request) error 
 
 func saveUpdate(btx *postContext, w http.ResponseWriter, r *http.Request) error {
 	rtitle := r.FormValue("title")
+	rtitle = strings.TrimSuffix(rtitle, "?")
 	rbody := r.FormValue("body")
 	now := time.Now()
 	p := &post{
@@ -68,9 +71,9 @@ func saveUpdate(btx *postContext, w http.ResponseWriter, r *http.Request) error 
 
 func viewPost(btx *postContext, w http.ResponseWriter, r *http.Request) error {
 	title := r.URL.Path[len("/blog/"):]
+	title = strings.TrimSuffix(title, "?")
 	p := &post{Title: title}
 	p, err := btx.query(p)
-
 	pa := &page{Tmpl: "view", Post: p, W: w}
 	err = pa.renderTemplate()
 	return err
@@ -96,6 +99,7 @@ func managePosts(btx *postContext, w http.ResponseWriter, r *http.Request) error
 
 func deletePost(btx *postContext, w http.ResponseWriter, r *http.Request) error {
 	title := r.URL.Path[len("/blog/delete/"):]
+	title = strings.TrimSuffix(title, "?")
 	p := &post{}
 	p.Title = title
 	err := btx.delete(p)

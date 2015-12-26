@@ -22,9 +22,31 @@ func str2html(raw []byte) template.HTML {
 }
 
 func markdown2HtmlTemplate(raw []byte) template.HTML {
-	str := string(raw)
-	s := stripHTMLReplacer.Replace(str)
-	return template.HTML(blackfriday.MarkdownCommon([]byte(s)))
+	//str := string(raw)
+	//s := stripHTMLReplacer.Replace(str)
+	//unsafe := blackfriday.MarkdownCommon(raw)
+	//html := bluemonday.UGCPolicy().SanitizeBytes(unsafe)
+	html := markdownRender(raw)
+	return template.HTML(html)
+}
+
+func markdownRender(content []byte) string {
+	htmlFlags := 0
+	htmlFlags |= blackfriday.HTML_USE_SMARTYPANTS
+	htmlFlags |= blackfriday.HTML_SMARTYPANTS_FRACTIONS
+
+	renderer := blackfriday.HtmlRenderer(htmlFlags, "", "")
+
+	extensions := 0
+	extensions |= blackfriday.EXTENSION_NO_INTRA_EMPHASIS
+	extensions |= blackfriday.EXTENSION_TABLES
+	extensions |= blackfriday.EXTENSION_FENCED_CODE
+	extensions |= blackfriday.EXTENSION_AUTOLINK
+	extensions |= blackfriday.EXTENSION_STRIKETHROUGH
+	extensions |= blackfriday.EXTENSION_SPACE_HEADERS
+	extensions |= blackfriday.EXTENSION_HARD_LINE_BREAK
+
+	return string(blackfriday.Markdown(content, renderer, extensions))
 }
 
 var funcMap = template.FuncMap{
