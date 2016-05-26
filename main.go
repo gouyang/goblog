@@ -94,7 +94,7 @@ func main() {
 		"passwd": "hello",
 	}).Info("admin info")
 	log.WithFields(log.Fields{
-		"url": "http://127.0.0.1:8001",
+		"url": ":8001",
 	}).Info("Server run at")
 	http.ListenAndServe(":8001", nil)
 }
