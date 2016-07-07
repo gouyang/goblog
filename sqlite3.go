@@ -137,7 +137,6 @@ func (pc *postContext) getAllPosts() (p []post) {
 }
 
 func (pc *postContext) cleanup() error {
-	defer pc.db.Close()
 	stmt := `delete from blog`
 	_, err := pc.db.Exec(stmt)
 	if err != nil {

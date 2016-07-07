@@ -8,16 +8,24 @@ import (
 	log "github.com/Sirupsen/logrus"
 )
 
-func homePage(btx *postContext, w http.ResponseWriter, r *http.Request) error {
-	p := &page{Tmpl: "layout", Post: &post{}, W: w}
-	err := p.renderTemplate()
-	return err
+func homePage(w http.ResponseWriter, r *http.Request) {
+	t := compileTemplate("layout")
+	err := t.ExecuteTemplate(w, "base", nil)
+	if err != nil {
+		log.WithFields(log.Fields{
+			"error": err,
+		}).Error("Failed with error")
+	}
 }
 
-func newPost(btx *postContext, w http.ResponseWriter, r *http.Request) error {
-	p := &page{Tmpl: "new", Post: &post{}, W: w}
-	err := p.renderTemplate()
-	return err
+func newPost(w http.ResponseWriter, r *http.Request) {
+	t := compileTemplate("new")
+	err := t.ExecuteTemplate(w, "base", nil)
+	if err != nil {
+		log.WithFields(log.Fields{
+			"error": err,
+		}).Error("Failed with error")
+	}
 }
 
 func savePost(btx *postContext, w http.ResponseWriter, r *http.Request) error {
@@ -119,14 +127,22 @@ func cleanUp(btx *postContext, w http.ResponseWriter, r *http.Request) error {
 	return err
 }
 
-func gallerys(btx *postContext, w http.ResponseWriter, r *http.Request) error {
-	p := &page{Tmpl: "gallerys", Post: &post{}, W: w}
-	err := p.renderTemplate()
-	return err
+func gallerys(w http.ResponseWriter, r *http.Request) {
+	t := compileTemplate("gallerys")
+	err := t.ExecuteTemplate(w, "base", nil)
+	if err != nil {
+		log.WithFields(log.Fields{
+			"error": err,
+		}).Error("Failed with error")
+	}
 }
 
-func adminPage(btx *postContext, w http.ResponseWriter, r *http.Request) error {
-	p := &page{Tmpl: "admin", Post: &post{}, W: w}
-	err := p.renderTemplate()
-	return err
+func adminPage(w http.ResponseWriter, r *http.Request) {
+	t := compileTemplate("admin")
+	err := t.ExecuteTemplate(w, "base", nil)
+	if err != nil {
+		log.WithFields(log.Fields{
+			"error": err,
+		}).Error("Failed with error")
+	}
 }
